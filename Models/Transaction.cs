@@ -1,6 +1,8 @@
+// using System.Text.Json.Serialization;
+
 public class Transaction
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString(); // Primary key
+    public string Id { get; set; } = Guid.NewGuid().ToString(); // PK
 
     public string Description { get; set; } = null!;
 
@@ -18,5 +20,6 @@ public class Transaction
     // Navigation property for FinanceAccount:
     // property in an entity class that allows you to navigate to related entities.
     // Usage: Data Relationship Representation, Easier Data Access
-    public FinanceAccount FinanceAccount { get; set; } = null!;
+    // [JsonIgnore]
+    public FinanceAccount FinanceAccount { get; set; } = null!; 
 }

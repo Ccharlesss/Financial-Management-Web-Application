@@ -9,7 +9,7 @@ namespace ManageFinance.Services
     {
         // class contains a single static method, InitializeAsync, which performs the initialization tasks:
         // IServiceProvider: This is a service provider that comes from the Dependency Injection (DI) system in ASP.NET Core.
-        //  It is used to get instances of services such as RoleManager<IdentityRole> and UserManager<IdentityUser>.       
+        // It is used to get instances of services such as RoleManager<IdentityRole> and UserManager<IdentityUser>.       
         public static async Task InitializeAsync(IServiceProvider serviceProvider, ILogger<RoleAndUserInitializer> logger)
         {   // resolves (or retrieves) two key services from the DI container:
             // GetRequiredService<T>() method throws an exception if the service cannot be found, ensuring that the required services are available.

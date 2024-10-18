@@ -11,6 +11,12 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     restart: unless-stopped
+    healthcheck: # Add healthcheck to ensure PostgreSQL is ready
+      test: ["CMD-SHELL", "pg_isready -U myuser -d mydatabase"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+      timeout: 5s
 
   app:
     container_name: aspnet-core-app
@@ -24,6 +30,9 @@ services:
       - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=mydatabase;Username=myuser;Password=mypassword
     depends_on:
       - db
+    volumes:
+      - ./data-protection:/root/.aspnet/DataProtection-Keys
 
 volumes:
   postgres-data:
+  data-protection:

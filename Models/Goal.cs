@@ -1,8 +1,8 @@
-
+// using System.Text.Json.Serialization;
 
 public class Goal
 {
-  public string Id { get; set; } = Guid.NewGuid().ToString();
+  public string Id { get; set; } = Guid.NewGuid().ToString(); // PK
 
   public string GoalTitle { get; set; } = null!;
 
@@ -12,7 +12,9 @@ public class Goal
 
   public DateTime TargetDate { get; set; }
 
-  public string UserId { get; set; } = null!;
+//   public string UserId { get; set; } = null!; // FK
 
-  public AppUser User { get; set; } =null!; 
+
+// [JsonIgnore]
+//   public AppUser User { get; set; } =null!; // Navigation Link
 }

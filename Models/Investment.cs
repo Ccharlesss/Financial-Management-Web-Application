@@ -1,8 +1,8 @@
-
+// using System.Text.Json.Serialization;
 
 public class Investment
 {
-  public string Id { get; set; } = Guid.NewGuid().ToString(); 
+  public string Id { get; set; } = Guid.NewGuid().ToString(); // PK
 
   public string AssetName { get; set; } = null!;
 
@@ -12,10 +12,10 @@ public class Investment
 
   public DateTime PurchaseDate { get; set; }
 
-  // Foreign key to ApplicationUser (custom user class)
-  public string UserId { get; set; } = null!; 
+  
+//   public string UserId { get; set; } = null!; // FK
 
-  // Navigation property for ApplicationUser (custom user class)
-  public AppUser User { get; set; } = null!; 
+// [JsonIgnore]  
+//   public AppUser User { get; set; } = null!; // Navigation
 
 }

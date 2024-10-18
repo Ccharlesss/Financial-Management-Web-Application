@@ -1,6 +1,9 @@
+// using System.Text.Json.Serialization;
+
+
 public class FinanceAccount
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString(); // Primary key
+    public string Id { get; set; } = Guid.NewGuid().ToString(); // PK
 
     public string AccountName { get; set; } = null!;
 
@@ -8,11 +11,11 @@ public class FinanceAccount
 
     public decimal Balance { get; set; }
 
-    // Foreign key to ApplicationUser (custom user class)
-    public string UserId { get; set; } = null!; 
+   
+    // public string UserId { get; set; } = null!; // FK
 
-    // Navigation property for ApplicationUser (custom user class)
-    public AppUser User { get; set; } = null!; 
+    // [JsonIgnore]
+    // public AppUser User { get; set; } = null!; // Navigation
 
     public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 }

@@ -1,14 +1,15 @@
-
+// using System.Text.Json.Serialization;
 
 public class Budget
 {
-  public string Id { get; set; } = Guid.NewGuid().ToString();
+  public string Id { get; set; } = Guid.NewGuid().ToString(); // PK
 
   public string Category { get; set; } = null!;
 
   public decimal Limit { get; set; }
 
-  public string UserId { get; set; } = null!;
+//   public string UserId { get; set; } = null!; // FK
 
-  public AppUser User { get; set; } = null!;
+// [JsonIgnore]
+//   public AppUser User { get; set; } = null!; // NavigationLink
 }
