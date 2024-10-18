@@ -1,4 +1,4 @@
-// using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 public class Goal
 {
@@ -12,9 +12,9 @@ public class Goal
 
   public DateTime TargetDate { get; set; }
 
-//   public string UserId { get; set; } = null!; // FK
+  public string UserId { get; set; } = null!; // FK
 
 
-// [JsonIgnore]
-//   public AppUser User { get; set; } =null!; // Navigation Link
+[JsonIgnore]
+  public AppUser User { get; set; } =null!; // Navigation Link
 }

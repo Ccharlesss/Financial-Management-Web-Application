@@ -1,4 +1,4 @@
-// using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 
 public class FinanceAccount
@@ -12,10 +12,10 @@ public class FinanceAccount
     public decimal Balance { get; set; }
 
    
-    // public string UserId { get; set; } = null!; // FK
+    public string UserId { get; set; } = null!; // FK
 
-    // [JsonIgnore]
-    // public AppUser User { get; set; } = null!; // Navigation
+    [JsonIgnore]
+    public AppUser User { get; set; } = null!; // Navigation
 
     public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 }

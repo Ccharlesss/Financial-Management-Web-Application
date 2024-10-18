@@ -1,4 +1,4 @@
-// using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 public class Budget
 {
@@ -8,8 +8,8 @@ public class Budget
 
   public decimal Limit { get; set; }
 
-//   public string UserId { get; set; } = null!; // FK
+  public string UserId { get; set; } = null!; // FK
 
-// [JsonIgnore]
-//   public AppUser User { get; set; } = null!; // NavigationLink
+[JsonIgnore]
+  public AppUser User { get; set; } = null!; // NavigationLink
 }

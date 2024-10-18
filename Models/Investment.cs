@@ -1,4 +1,4 @@
-// using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 public class Investment
 {
@@ -13,9 +13,9 @@ public class Investment
   public DateTime PurchaseDate { get; set; }
 
   
-//   public string UserId { get; set; } = null!; // FK
+  public string UserId { get; set; } = null!; // FK
 
-// [JsonIgnore]  
-//   public AppUser User { get; set; } = null!; // Navigation
+[JsonIgnore]  
+  public AppUser User { get; set; } = null!; // Navigation
 
 }

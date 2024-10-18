@@ -1,4 +1,4 @@
-// using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 public class Transaction
 {
@@ -20,6 +20,6 @@ public class Transaction
     // Navigation property for FinanceAccount:
     // property in an entity class that allows you to navigate to related entities.
     // Usage: Data Relationship Representation, Easier Data Access
-    // [JsonIgnore]
+    [JsonIgnore]
     public FinanceAccount FinanceAccount { get; set; } = null!; 
 }
