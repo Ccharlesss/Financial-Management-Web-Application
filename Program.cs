@@ -24,7 +24,8 @@ builder.Services.AddControllers();
 // ===========================================================================================================
 // Purpose: Dependency inj register the context class as service => enables the app to interact w/ DB:
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("Connection")));
+    // options.UseNpgsql(builder.Configuration.GetConnectionString("Connection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 // ===========================================================================================================
 
 
@@ -48,7 +49,7 @@ builder.Services.AddScoped<EmailService>();
 // Purpose: Implement a new service to enable the web application to use JWT token:
 // New instance of RolesController will be created for each HTTP request
 builder.Services.AddScoped<RolesController>();
-// Purpose: Configures a new service in Webapp => Set authentification scheme to JTW
+// // Purpose: Configures a new service in Webapp => Set authentification scheme to JTW
 builder.Services.AddAuthentication(options =>
 {   // JWT Bearer authentication will be used as the default scheme for authenticating users
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -96,6 +97,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
 }
 
 app.UseHttpsRedirection();

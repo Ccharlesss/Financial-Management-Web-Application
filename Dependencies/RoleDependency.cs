@@ -15,10 +15,12 @@ namespace ManageFinance.Services
             // GetRequiredService<T>() method throws an exception if the service cannot be found, ensuring that the required services are available.
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            logger.LogInformation("Starting Role and User Initialization...");
 
             // Define the roles you want to add
             var roles = new[] {"Admin", "User" };
             // Create Roles (if they don’t exist)
+            logger.LogInformation("Checking if roles exist...");
             foreach (var role in roles)
             {
                 if (!await roleManager.RoleExistsAsync(role))
@@ -59,3 +61,7 @@ namespace ManageFinance.Services
         }
     }
 }
+
+
+
+

@@ -395,7 +395,7 @@ namespace ManageFinance.Migrations
             modelBuilder.Entity("Investment", b =>
                 {
                     b.HasOne("AppUser", "User")
-                        .WithMany()
+                        .WithMany("Investments")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -472,6 +472,8 @@ namespace ManageFinance.Migrations
                     b.Navigation("Budgets");
 
                     b.Navigation("Goals");
+
+                    b.Navigation("Investments");
                 });
 
             modelBuilder.Entity("FinanceAccount", b =>

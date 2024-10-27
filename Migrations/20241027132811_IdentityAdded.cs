@@ -186,6 +186,11 @@ namespace ManageFinance.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Transactions_FinanceAccountId",
+                table: "Transactions",
+                column: "FinanceAccountId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Investments_UserId",
                 table: "Investments",
                 column: "UserId");
@@ -273,6 +278,14 @@ namespace ManageFinance.Migrations
                 principalTable: "AspNetUsers",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Transactions_Accounts_FinanceAccountId",
+                table: "Transactions",
+                column: "FinanceAccountId",
+                principalTable: "Accounts",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
         }
 
         /// <inheritdoc />
@@ -294,6 +307,10 @@ namespace ManageFinance.Migrations
                 name: "FK_Investments_AspNetUsers_UserId",
                 table: "Investments");
 
+            migrationBuilder.DropForeignKey(
+                name: "FK_Transactions_Accounts_FinanceAccountId",
+                table: "Transactions");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -314,6 +331,10 @@ namespace ManageFinance.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Transactions_FinanceAccountId",
+                table: "Transactions");
 
             migrationBuilder.DropIndex(
                 name: "IX_Investments_UserId",

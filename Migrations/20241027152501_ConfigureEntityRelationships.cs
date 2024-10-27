@@ -5,7 +5,7 @@
 namespace ManageFinance.Migrations
 {
     /// <inheritdoc />
-    public partial class CustomUsersAdded : Migration
+    public partial class ConfigureEntityRelationships : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

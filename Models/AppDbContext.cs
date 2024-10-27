@@ -10,7 +10,6 @@ namespace ManageFinance.Models
     {
 
     }
-
     // DbSet<T> : Collection of entities of a specific type (T) that can be queried from the database and persisted to it
     // Each DbSet represents a table in the database. && provides methods for Create, Read, Update, and Delete (CRUD) operations.
     public DbSet<Transaction> Transactions {get; set;}
@@ -25,7 +24,44 @@ namespace ManageFinance.Models
 
     public DbSet<AppUser> AppUsers{get; set;}
 
+
+
+    // Purpose: Define the type of relationships btw entities in the DB:
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+      base.OnModelCreating(modelBuilder); // Ensure the base class configuration is applied:
+
+      // Configure relationships:
+      modelBuilder.Entity<Transaction>()
+        .HasOne(f => f.FinanceAccount)
+        .WithMany(g => g.Transactions)
+        .HasForeignKey(f => f.FinanceAccountId);
+
+      modelBuilder.Entity<Investment>()
+        .HasOne(f => f.User)
+        .WithMany(g => g.Investments)
+        .HasForeignKey(f => f.UserId);
+
+      modelBuilder.Entity<Goal>()
+        .HasOne(f => f.User)
+        .WithMany(g => g.Goals)
+        .HasForeignKey(f => f.UserId);
+
+      modelBuilder.Entity<Budget>()
+        .HasOne(f => f.User)
+        .WithMany(g => g.Budgets)
+        .HasForeignKey(f => f.UserId);
+
+      modelBuilder.Entity<FinanceAccount>()
+        .HasOne(f => f.User)
+        .WithMany(g => g.Accounts)
+        .HasForeignKey(f => f.UserId);
+
+    }
+
   }
+
+
   
 }
 

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ManageFinance.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241018112724_InitialCreate")]
+    [Migration("20241027132401_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -137,25 +137,7 @@ namespace ManageFinance.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FinanceAccountId");
-
                     b.ToTable("Transactions");
-                });
-
-            modelBuilder.Entity("Transaction", b =>
-                {
-                    b.HasOne("FinanceAccount", "FinanceAccount")
-                        .WithMany("Transactions")
-                        .HasForeignKey("FinanceAccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("FinanceAccount");
-                });
-
-            modelBuilder.Entity("FinanceAccount", b =>
-                {
-                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

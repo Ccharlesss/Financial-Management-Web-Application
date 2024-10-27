@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ManageFinance.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241020122558_CustomUsersAdded")]
-    partial class CustomUsersAdded
+    [Migration("20241027152501_ConfigureEntityRelationships")]
+    partial class ConfigureEntityRelationships
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -398,7 +398,7 @@ namespace ManageFinance.Migrations
             modelBuilder.Entity("Investment", b =>
                 {
                     b.HasOne("AppUser", "User")
-                        .WithMany()
+                        .WithMany("Investments")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -475,6 +475,8 @@ namespace ManageFinance.Migrations
                     b.Navigation("Budgets");
 
                     b.Navigation("Goals");
+
+                    b.Navigation("Investments");
                 });
 
             modelBuilder.Entity("FinanceAccount", b =>
