@@ -32,7 +32,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // ===========================================================================================================
 // Purpose: Enables to Use IdentityUser and IdentityRole as services:
 // Purpose: Store User and Role in DB and use Context class to interact with these entities:
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+// builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+//     .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+
+builder.Services.AddIdentity<AppUser,IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 // ===========================================================================================================
 
