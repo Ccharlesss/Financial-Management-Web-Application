@@ -233,6 +233,35 @@ namespace ManageFinance.Controllers
 
         // ==================================================================================================================================
         // Purpose: Register new users in the system
+        // [HttpPost("register")]
+        // public async Task<IActionResult> Register(AuthSchema model)
+        // {
+        //     // Create an instance of user of type 'AppUser' which uses email (username) and password
+        //     var user = new AppUser { UserName = model.Email, Email = model.Email };
+
+        //     // Attempts to create a new user in the system using the 'UserManager<AppUser>' service
+        //     var result = await _userManager.CreateAsync(user, model.Password);
+
+        //     if (result.Succeeded)
+        //     {
+        //         // Generate an email verification token to the newly registered user
+        //         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        //         // Create the verification link
+        //         var verificationLink = Url.Action("VerifyEmail", "Account", new { userId = user.Id, token = token }, Request.Scheme);
+        //         // Send the verification Email to the new user
+        //         var emailSubject = "Email Verification";
+        //         var emailBody = $"Please verify your email by clicking the following link: {verificationLink}";
+        //         _emailService.SendEmail(user.Email, emailSubject, emailBody);
+        //         // Return an HTTP 200 Ok if user has been registered successfully into the system
+        //         return Ok("User registered successfully. An email verification link has been sent.");
+        //     }
+
+        //     // Returns an HTTP 400 Bad Request if User couldn't be registered into the system
+        //     return BadRequest(result.Errors);
+        // }
+
+
+
         [HttpPost("register")]
         public async Task<IActionResult> Register(AuthSchema model)
         {
@@ -244,6 +273,20 @@ namespace ManageFinance.Controllers
 
             if (result.Succeeded)
             {
+                // Ensure the role exist in the AspNetRole table:
+                var roleExist = await _userManager.IsInRoleAsync(user, "User");
+                // Case where the role was not assigned to the user:
+                if(!roleExist){
+
+                    // Assign the role = "User" to the newly created user:
+                    var roleResult = await _userManager.AddToRoleAsync(user, "User");
+
+                    // Case where the Assignment of the role didn't succeed:
+                    if(!roleResult.Succeeded){
+                        return BadRequest("Failed to assign the role 'User' to");
+                    }
+                }
+
                 // Generate an email verification token to the newly registered user
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 // Create the verification link
@@ -259,6 +302,9 @@ namespace ManageFinance.Controllers
             // Returns an HTTP 400 Bad Request if User couldn't be registered into the system
             return BadRequest(result.Errors);
         }
+
+
+
         // ==================================================================================================================================
 
         // ==================================================================================================================================
