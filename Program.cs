@@ -8,6 +8,7 @@ using ManageFinance.Controllers;
 using ManageFinance.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseUrls("http://+:80");
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -127,3 +128,4 @@ using (var scope = app.Services.CreateScope())
 
 
 app.Run();
+
