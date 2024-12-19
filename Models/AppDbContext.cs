@@ -50,7 +50,8 @@ namespace ManageFinance.Models
       modelBuilder.Entity<Budget>()
         .HasOne(f => f.User)
         .WithMany(g => g.Budgets)
-        .HasForeignKey(f => f.UserId);
+        .HasForeignKey(f => f.UserId)
+        .IsRequired(false);
 
       modelBuilder.Entity<FinanceAccount>()
         .HasOne(f => f.User)

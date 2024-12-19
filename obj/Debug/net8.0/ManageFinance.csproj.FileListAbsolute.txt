@@ -266,3 +266,5 @@
 /Users/romainkuhne/Documents/ManageFinance/obj/Debug/net8.0/ref/ManageFinance.dll
 /Users/romainkuhne/Documents/ManageFinance/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
 /Users/romainkuhne/Documents/ManageFinance/obj/Debug/net8.0/ManageFinance.sourcelink.json
+/Users/romainkuhne/Documents/ManageFinance/bin/Debug/net8.0/SendGrid.dll
+/Users/romainkuhne/Documents/ManageFinance/bin/Debug/net8.0/StarkbankEcdsa.dll

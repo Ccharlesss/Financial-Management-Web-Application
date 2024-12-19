@@ -11,5 +11,5 @@ public class Budget
   public string UserId { get; set; } = null!; // FK
 
 [JsonIgnore]
-  public AppUser User { get; set; } = null!; // NavigationLink
+  public virtual AppUser? User { get; set; } // NavigationLink
 }

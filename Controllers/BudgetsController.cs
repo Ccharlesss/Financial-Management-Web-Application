@@ -77,7 +77,17 @@ namespace ManageFinance.Controllers
         [HttpPost]
         public async Task<ActionResult<Budget>> PostBudget(Budget budget)
         {
+            // 1) Ensures the User with the following id exist in the database:
+            var user = await _context.Users.FindAsync(budget.UserId);
+            // Case where the user doesn't exist:
+            if(user == null){
+                return NotFound("user not found.");
+            }
+            // 2) Set the User navigation property:
+            budget.User = user;
+            // 3) Add the budget:
             _context.Budgets.Add(budget);
+            
             try
             {
                 await _context.SaveChangesAsync();
@@ -96,6 +106,9 @@ namespace ManageFinance.Controllers
 
             return CreatedAtAction("GetBudget", new { id = budget.Id }, budget);
         }
+
+
+
 
         // DELETE: api/Budgets/5
         [HttpDelete("{id}")]
