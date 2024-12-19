@@ -77,6 +77,11 @@ builder.Services.AddAuthentication(options =>
 });
 // ===========================================================================================================
 
+// Add logging configuration
+builder.Logging.ClearProviders(); // Clear default logging providers
+builder.Logging.AddConsole();     // Add Console logging
+builder.Logging.SetMinimumLevel(LogLevel.Information); // Set log level
+
 
 var app = builder.Build();
 

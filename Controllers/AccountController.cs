@@ -265,7 +265,8 @@ namespace ManageFinance.Controllers
         
         [HttpPost("register")]
         public async Task<IActionResult> Register(AuthSchema model)
-        {
+        {   
+
             // Create an instance of user of type 'AppUser' which uses email (username) and password
             var user = new AppUser { UserName = model.Email, Email = model.Email };
 
@@ -290,8 +291,10 @@ namespace ManageFinance.Controllers
 
                 // Generate an email verification token to the newly registered user
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                // Create the verification link
-                var verificationLink = Url.Action("VerifyEmail", "Account", new { userId = user.Id, token = token }, Request.Scheme);
+                //URL-encode the token to make it safe to use in a URL query string:
+                var encodedToken = System.Net.WebUtility.UrlEncode(token);
+                // Create the verification link with the encoded token
+                var verificationLink = Url.Action("VerifyEmail", "Account", new { userId = user.Id, token = encodedToken }, Request.Scheme);
                 // Send the verification Email to the new user
                 var emailSubject = "Email Verification";
                 var emailBody = $"Please verify your email by clicking the following link: {verificationLink}";
@@ -313,6 +316,8 @@ namespace ManageFinance.Controllers
         [HttpGet("verify-email")]
         public async Task<IActionResult> VerifyEmail(string userId, string token)
         {
+            // URL-decode the token receibed in the query string:
+            var decodedToken = System.Net.WebUtility.UrlDecode(token);
             // Retrieve the user corresponding to the userId
             var user = await _userManager.FindByIdAsync(userId);
 
@@ -324,7 +329,7 @@ namespace ManageFinance.Controllers
 
             // Case where user has been found:
             // Attempts to confirm the email for the specified user using the provided token
-            var result = await _userManager.ConfirmEmailAsync(user, token);
+            var result = await _userManager.ConfirmEmailAsync(user, decodedToken);
             // Case where email verification was successful => Return an HTTP 200 Ok
             if (result.Succeeded)
             {

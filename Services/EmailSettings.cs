@@ -6,6 +6,6 @@ public class EmailSettings
 
   public string SmtpUsername { get; set;} = null!;
 
-  public string SmptPassword  { get; set; } = null!;
+  public string SmtpPassword  { get; set; } = null!;
 
 }

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "FlSJzOxOHGu4gfw3yS6q1udWbAuBOACuLFcJ3gsfBnW41kQzGS7tzVgkhb71GOhLkmtJUI6t+ApTjl6uOZz9vw==",
+  "dgSpecHash": "An1OspUiJqiXUJJoDJXhrmgU8+O92d4EOYukc3NYlRYT2+gLZzAEaoPVT36IO73X/luL48rcEHy1TFMRuEvSfg==",
   "success": true,
   "projectFilePath": "/Users/romainkuhne/Documents/ManageFinance/ManageFinance.csproj",
   "expectedPackageFiles": [
@@ -136,6 +136,8 @@
     "/Users/romainkuhne/.nuget/packages/nuget.projectmodel/6.11.0/nuget.projectmodel.6.11.0.nupkg.sha512",
     "/Users/romainkuhne/.nuget/packages/nuget.protocol/6.11.0/nuget.protocol.6.11.0.nupkg.sha512",
     "/Users/romainkuhne/.nuget/packages/nuget.versioning/6.11.0/nuget.versioning.6.11.0.nupkg.sha512",
+    "/Users/romainkuhne/.nuget/packages/sendgrid/9.29.3/sendgrid.9.29.3.nupkg.sha512",
+    "/Users/romainkuhne/.nuget/packages/starkbank-ecdsa/1.3.3/starkbank-ecdsa.1.3.3.nupkg.sha512",
     "/Users/romainkuhne/.nuget/packages/swashbuckle.aspnetcore/6.4.0/swashbuckle.aspnetcore.6.4.0.nupkg.sha512",
     "/Users/romainkuhne/.nuget/packages/swashbuckle.aspnetcore.swagger/6.4.0/swashbuckle.aspnetcore.swagger.6.4.0.nupkg.sha512",
     "/Users/romainkuhne/.nuget/packages/swashbuckle.aspnetcore.swaggergen/6.4.0/swashbuckle.aspnetcore.swaggergen.6.4.0.nupkg.sha512",
