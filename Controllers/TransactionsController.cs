@@ -71,7 +71,11 @@ namespace ManageFinance.Controllers
             return NoContent();
         }
 
+
+//=============================================================================================================================
+//                                              PURPOSE: CREATE A TRANSACTION
         // POST: api/Transactions
+
         [HttpPost]
         public async Task<ActionResult<Transaction>> PostTransaction(Transaction transaction)
         {
@@ -80,6 +84,7 @@ namespace ManageFinance.Controllers
 
             return CreatedAtAction("GetTransaction", new { id = transaction.Id }, transaction);
         }
+//=============================================================================================================================
 
         // DELETE: api/Transactions/{id}
         [HttpDelete("{id}")]
@@ -97,9 +102,16 @@ namespace ManageFinance.Controllers
             return NoContent();
         }
 
+
+
+
+
+//=============================================================================================================================
+//                                              PURPOSE: ASSESS IF THE TRANSACTION EXIST
         private bool TransactionExists(string id) // Changed from Guid to string
         {
             return _context.Transactions.Any(e => e.Id == id); // Consistent with string Id
         }
     }
+//=============================================================================================================================
 }
