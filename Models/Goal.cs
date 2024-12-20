@@ -10,11 +10,11 @@ public class Goal
 
   public decimal CurrentAmount  { get; set; }
 
-  public DateTime TargetDate { get; set; }
+  public DateOnly TargetDate { get; set; }
 
   public string UserId { get; set; } = null!; // FK
 
 
 [JsonIgnore]
-  public AppUser User { get; set; } =null!; // Navigation Link
+  public virtual AppUser? User { get; set; } // Navigation Link
 }

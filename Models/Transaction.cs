@@ -21,5 +21,5 @@ public class Transaction
     // property in an entity class that allows you to navigate to related entities.
     // Usage: Data Relationship Representation, Easier Data Access
     [JsonIgnore]
-    public FinanceAccount FinanceAccount { get; set; } = null!; 
+    public virtual FinanceAccount? FinanceAccount { get; set; }
 }

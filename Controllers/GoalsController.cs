@@ -72,19 +72,31 @@ namespace ManageFinance.Controllers
             return NoContent();
         }
 
+
+//=============================================================================================================================
+//                                              PURPOSE: CREATE A GOAL:
         // POST: api/Goals
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Goal>> PostGoal(Goal goal)
-        {
+        {   // 1) Retrieve the user from DB:
+            var user = await _context.Users.FindAsync(goal.UserId);
+            // Case where the user doesn't exist => Return 404 not found:
+            if(user==null)
+            {
+                return NotFound("User not found");
+            }
+            // 2) Set the User navigation property:
+            goal.User = user;
+            // 3) Create the goal:
             _context.Goals.Add(goal);
+            // 4) Attempt to save the entry into the database:
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateException)
+            catch(DbUpdateConcurrencyException)
             {
-                if (GoalExists(goal.Id))
+                if(GoalExists(goal.Id))
                 {
                     return Conflict();
                 }
@@ -93,9 +105,13 @@ namespace ManageFinance.Controllers
                     throw;
                 }
             }
-
-            return CreatedAtAction("GetGoal", new { id = goal.Id }, goal);
+            return CreatedAtAction("GetGoal", new{id = goal.Id}, goal);
         }
+//=============================================================================================================================
+
+
+
+
 
         // DELETE: api/Goals/5
         [HttpDelete("{id}")]

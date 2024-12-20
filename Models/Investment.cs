@@ -16,6 +16,6 @@ public class Investment
   public string UserId { get; set; } = null!; // FK
 
 [JsonIgnore]  
-  public AppUser User { get; set; } = null!; // Navigation
+  public virtual AppUser? User { get; set; } // Navigation
 
 }
