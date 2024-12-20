@@ -20,46 +20,86 @@ namespace ManageFinance.Controllers
             _context = context;
         }
 
+
+
+//=============================================================================================================================
+//                                              PURPOSE: GET ALL GOALS
         // GET: api/Goals
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Goal>>> GetGoals()
         {
             return await _context.Goals.ToListAsync();
         }
+//=============================================================================================================================
 
+
+
+
+
+
+
+
+
+
+
+//=============================================================================================================================
+//                                              PURPOSE: GET A GOAL
         // GET: api/Goals/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Goal>> GetGoal(string id)
         {
+            // 1) Retrieve the goal from the DB:
             var goal = await _context.Goals.FindAsync(id);
-
-            if (goal == null)
+            // Case where the goal id doesn't exist:
+            if(goal==null)
             {
-                return NotFound();
+                return NotFound("Goal not found.");
             }
 
+            // 2) Return the retrieved goal:
             return goal;
         }
+//=============================================================================================================================
 
+
+
+
+
+
+
+
+
+
+//=============================================================================================================================
+//                                              PURPOSE: UPDATE A GOAL
         // PUT: api/Goals/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGoal(string id, Goal goal)
         {
-            if (id != goal.Id)
+            // 1) Retrieve the goal with the entered id:
+            var retrievedGoal = await _context.Goals.FindAsync(id);
+            // Case where the goal with the id doesn't exist:
+            if(retrievedGoal == null)
             {
-                return BadRequest();
+                return NotFound("Goal not found.");
             }
 
-            _context.Entry(goal).State = EntityState.Modified;
+            // 3) Update the fields of the retrieved goal:
+            retrievedGoal.GoalTitle = goal.GoalTitle;
+            retrievedGoal.TargetAmount = goal.TargetAmount;
+            retrievedGoal.CurrentAmount = goal.CurrentAmount;
+            retrievedGoal.TargetDate = goal.TargetDate;
+            // 4) Explicitly indicate EFCore to change the state of the retrievedGoal as modified:
+            _context.Entry(retrievedGoal).State = EntityState.Modified;
 
+            // 5) Save the changes made to the entry:
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch(DbUpdateConcurrencyException)
             {
-                if (!GoalExists(id))
+                if(!GoalExists(id))
                 {
                     return NotFound();
                 }
@@ -71,6 +111,14 @@ namespace ManageFinance.Controllers
 
             return NoContent();
         }
+//=============================================================================================================================
+
+
+
+
+
+
+
 
 
 //=============================================================================================================================
@@ -113,25 +161,43 @@ namespace ManageFinance.Controllers
 
 
 
+
+
+
+//=============================================================================================================================
+//                                              PURPOSE: REMOVE A GOAL
         // DELETE: api/Goals/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGoal(string id)
         {
+            // 1) Retrieve the goal from the DB:
             var goal = await _context.Goals.FindAsync(id);
-            if (goal == null)
+            if(goal==null)
             {
-                return NotFound();
+                return NotFound("Goal not found.");
             }
 
+            // 2) Indicate to EFCore the state for this entry is Delete:
             _context.Goals.Remove(goal);
+            // 3) Save the changes made and remove goal => Delete the entry:
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
+//=============================================================================================================================
 
+
+
+
+
+
+
+
+//=============================================================================================================================
+//                                              PURPOSE: ASSESS IF A GOAL EXIST WITH THIS ID
         private bool GoalExists(string id)
         {
             return _context.Goals.Any(e => e.Id == id);
         }
     }
+//=============================================================================================================================
 }
