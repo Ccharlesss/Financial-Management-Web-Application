@@ -72,6 +72,11 @@ namespace ManageFinance.Controllers
         }
 
 
+
+
+
+
+
 //=============================================================================================================================
 //                                              PURPOSE: CREATE A TRANSACTION
         // POST: api/Transactions
@@ -86,6 +91,17 @@ namespace ManageFinance.Controllers
         }
 //=============================================================================================================================
 
+
+
+
+
+
+
+
+
+
+//=============================================================================================================================
+//                                              PURPOSE: REMOVE A TRANSACTION
         // DELETE: api/Transactions/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTransaction(string id)
@@ -101,6 +117,9 @@ namespace ManageFinance.Controllers
 
             return NoContent();
         }
+
+
+
 
 
 
