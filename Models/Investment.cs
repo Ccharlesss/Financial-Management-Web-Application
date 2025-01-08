@@ -10,7 +10,7 @@ public class Investment
 
   public decimal CurrentValue { get; set; }
 
-  public DateTime PurchaseDate { get; set; }
+  public DateOnly PurchaseDate { get; set; }
 
   
   public string UserId { get; set; } = null!; // FK
