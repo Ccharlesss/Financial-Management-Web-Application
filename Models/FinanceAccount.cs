@@ -15,7 +15,7 @@ public class FinanceAccount
     public string UserId { get; set; } = null!; // FK
 
     [JsonIgnore]
-    public AppUser User { get; set; } = null!; // Navigation
+    public virtual AppUser? User { get; set; }// Navigation
 
-    public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+    public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 }

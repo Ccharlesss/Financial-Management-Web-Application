@@ -140,7 +140,7 @@ namespace ManageFinance.Controllers
         [HttpPost]
         public async Task<ActionResult<Transaction>> PostTransaction(Transaction transaction)
         {   // 1) Retrieve the Account where the transaction belongs to:
-            var retrievedAccount = await _context.Accounts.FindAsync(transaction.Id);
+            var retrievedAccount = await _context.Accounts.FindAsync(transaction.FinanceAccountId);
             if(retrievedAccount==null)
             {
                 return NotFound("Account not found");
