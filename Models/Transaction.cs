@@ -8,9 +8,7 @@ public class Transaction
 
     public decimal Amount { get; set; }
 
-    public DateTime Date { get; set; }
-
-    public string Category { get; set; } = null!;
+    public DateOnly Date { get; set; }
 
     public bool IsExpense { get; set; }
 
