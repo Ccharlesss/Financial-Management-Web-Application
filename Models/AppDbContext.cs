@@ -61,7 +61,11 @@ namespace ManageFinance.Models
       // Explicitly configure DateOnly properties:
       modelBuilder.Entity<Investment>()
         .Property(i => i.PurchaseDate)
-        .HasColumnType("date");      
+        .HasColumnType("date");
+
+      modelBuilder.Entity<Transaction>()
+        .Property(t => t.Date)      
+        .HasColumnType("Date");
 
     }
 
