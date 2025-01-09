@@ -58,6 +58,11 @@ namespace ManageFinance.Models
         .WithMany(g => g.Accounts)
         .HasForeignKey(f => f.UserId);
 
+      // Explicitly configure DateOnly properties:
+      modelBuilder.Entity<Investment>()
+        .Property(i => i.PurchaseDate)
+        .HasColumnType("date");      
+
     }
 
   }

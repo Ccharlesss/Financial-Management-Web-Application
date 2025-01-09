@@ -153,7 +153,7 @@ namespace ManageFinance.Controllers
                     throw;
                 }
             }
-            return CreatedAtAction("GetInnvestment", new {id = investment.Id}, investment);
+            return CreatedAtAction("GetInvestment", new {id = investment.Id}, investment);
         }
 //=============================================================================================================================
 
