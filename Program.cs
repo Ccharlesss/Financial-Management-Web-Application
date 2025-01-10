@@ -47,6 +47,8 @@ builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Emai
 builder.Services.AddScoped<EmailService>();
 // ===========================================================================================================
 
+// Purpose: Register FinanceAccountService for Dependency Injection:
+builder.Services.AddScoped<IFinanceAccountService, FinanceAccountService>();
 
 
 // ===========================================================================================================

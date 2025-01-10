@@ -16,9 +16,13 @@ namespace ManageFinance.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public TransactionsController(ApplicationDbContext context)
+        // Added for Dependency injection:
+        private readonly IFinanceAccountService _financeAccountService;
+
+        public TransactionsController(ApplicationDbContext context, IFinanceAccountService financeAccountService)
         {
             _context = context;
+            _financeAccountService = financeAccountService;
         }
 
 
@@ -140,7 +144,14 @@ namespace ManageFinance.Controllers
         [HttpPost]
         public async Task<ActionResult<Transaction>> PostTransaction(Transaction transaction)
         {   // 1) Retrieve the Account where the transaction belongs to:
-            var retrievedAccount = await _context.Accounts.FindAsync(transaction.FinanceAccountId);
+            var retrievedAccount = await _context.Accounts
+                // Ensures when retrieve account => all transactions associated with account are also loded
+                .Include(a => a.Transactions)
+                // FindAsync used to retrieve entity based on PK => not efficient for related entities
+                // More efficient other way as it uses a Join thus more efficient
+                // one database query is made, fetching both the account and its transactions.
+                .FirstOrDefaultAsync(a => a.Id == transaction.FinanceAccountId);
+
             if(retrievedAccount==null)
             {
                 return NotFound("Account not found");
@@ -150,6 +161,9 @@ namespace ManageFinance.Controllers
             transaction.FinanceAccount = retrievedAccount;
             // 3) Create the transaction related to the account:
             _context.Transactions.Add(transaction);
+            // 4) Update the balance of the finance Account:
+            retrievedAccount.Balance = _financeAccountService.ComputeBalance(retrievedAccount);
+
 
             // 4) Attempt to save the changes made to the DB:
             try
@@ -170,7 +184,9 @@ namespace ManageFinance.Controllers
             return CreatedAtAction("GetTransaction", new {id = transaction.Id}, transaction);
 
         }
-//=============================================================================================================================
+
+
+        //=============================================================================================================================
 
 
 
@@ -184,8 +200,8 @@ namespace ManageFinance.Controllers
 
 
 
-//=============================================================================================================================
-//                                              PURPOSE: REMOVE A TRANSACTION
+        //=============================================================================================================================
+        //                                              PURPOSE: REMOVE A TRANSACTION
 
 
 
@@ -207,6 +223,7 @@ namespace ManageFinance.Controllers
 
         }
 //=============================================================================================================================
+
 
 
 

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ManageFinance.Models;
+using System.Runtime.CompilerServices;
+using System.ComponentModel;
 
 namespace ManageFinance.Controllers
 {
@@ -102,6 +104,16 @@ namespace ManageFinance.Controllers
 //=============================================================================================================================
 
 
+        
+
+
+
+
+
+
+
+
+
 
 
 
@@ -153,6 +165,11 @@ namespace ManageFinance.Controllers
 
 
 
+
+
+
+
+
 //=============================================================================================================================
 //                                              PURPOSE: REMOVE A FINANCIAL ACCOUNT:
         [HttpDelete("{id}")]
@@ -188,6 +205,7 @@ namespace ManageFinance.Controllers
             return _context.Accounts.Any(e => e.Id == id);
         }
 //=============================================================================================================================
+
     }
 
 
