@@ -102,8 +102,21 @@ namespace ManageFinance.Controllers
             retrievedTransaction.Amount = transaction.Amount;
             retrievedTransaction.Date = transaction.Date;
             retrievedTransaction.IsExpense = transaction.IsExpense;
-            // 3) Indicate EFcore that the state of the entry is modified:
+            retrievedTransaction.FinanceAccountId = transaction.Id;
+            // 3) Indicate EFcore that the state of the entry is modified: 
             _context.Entry(retrievedTransaction).State = EntityState.Modified;
+
+            // 4) Attempt to retrieve the Account where the transaction lies:
+            var retrievedAccount = await _context.Accounts
+                .Include(a => a.Transactions)
+                .FirstOrDefaultAsync(a => a.Id == transaction.FinanceAccountId);
+            if(retrievedAccount==null)
+            {
+                return NotFound("Account not found.");
+            }
+
+            // 5) Update the balance of the Finance Account:
+            retrievedAccount.Balance = _financeAccountService.ComputeBalance(retrievedAccount);
 
             // 4) Attempt to change the changes made to the DB:
             try
