@@ -102,7 +102,6 @@ namespace ManageFinance.Controllers
             retrievedTransaction.Amount = transaction.Amount;
             retrievedTransaction.Date = transaction.Date;
             retrievedTransaction.IsExpense = transaction.IsExpense;
-            retrievedTransaction.FinanceAccountId = transaction.Id;
             // 3) Indicate EFcore that the state of the entry is modified: 
             _context.Entry(retrievedTransaction).State = EntityState.Modified;
 
@@ -230,6 +229,19 @@ namespace ManageFinance.Controllers
 
             // 2) Update the State of the retrieved entry to delete => Indicate EFcore to remove it when savechangesasync:
             _context.Transactions.Remove(transaction);
+
+            // 3) Retrieve the account tied to the transaction to remove:
+            var retrievedAccount = await _context.Accounts
+                .Include(a => a.Transactions)
+                .FirstOrDefaultAsync(a => a.Id == transaction.FinanceAccountId);
+            if(retrievedAccount == null)
+            {
+                return NotFound("Account not found.");
+            }
+
+            // 4) Recompute the balance of the account:
+            retrievedAccount.Balance = _financeAccountService.ComputeBalance(retrievedAccount);
+
             // 3) Save changes made to the DB and remove entry:
             await _context.SaveChangesAsync();
             return NoContent();
