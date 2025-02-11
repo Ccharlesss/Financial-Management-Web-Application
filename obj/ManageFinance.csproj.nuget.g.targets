@@ -6,5 +6,7 @@
     <Import Project="$(NuGetPackageRoot)microsoft.extensions.logging.abstractions/8.0.0/buildTransitive/net6.0/Microsoft.Extensions.Logging.Abstractions.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.extensions.logging.abstractions/8.0.0/buildTransitive/net6.0/Microsoft.Extensions.Logging.Abstractions.targets')" />
     <Import Project="$(NuGetPackageRoot)microsoft.extensions.options/8.0.2/buildTransitive/net6.0/Microsoft.Extensions.Options.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.extensions.options/8.0.2/buildTransitive/net6.0/Microsoft.Extensions.Options.targets')" />
     <Import Project="$(NuGetPackageRoot)microsoft.codeanalysis.analyzers/3.3.4/buildTransitive/Microsoft.CodeAnalysis.Analyzers.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.codeanalysis.analyzers/3.3.4/buildTransitive/Microsoft.CodeAnalysis.Analyzers.targets')" />
+    <Import Project="$(NuGetPackageRoot)hotchocolate.data/15.0.3/build/HotChocolate.Data.targets" Condition="Exists('$(NuGetPackageRoot)hotchocolate.data/15.0.3/build/HotChocolate.Data.targets')" />
+    <Import Project="$(NuGetPackageRoot)hotchocolate.aspnetcore/15.0.3/build/HotChocolate.AspNetCore.targets" Condition="Exists('$(NuGetPackageRoot)hotchocolate.aspnetcore/15.0.3/build/HotChocolate.AspNetCore.targets')" />
   </ImportGroup>
 </Project>
