@@ -243,6 +243,85 @@ public class Mutation
     await context.SaveChangesAsync();
     return true;
   }
+//=============================================================================================================================
+
+
+
+
+
+//=============================================================================================================================
+  // Purpose: Handles the logic for the creation of a Budget:
+  public async Task<Budget> CreateBudget(Budget input, [Service] ApplicationDbContext context)
+  { // 1) Attempt to fetch the user from the DB:
+    var user = await context.Users.FindAsync(input.UserId);
+    if(user == null)
+    {
+      throw new GraphQLException(ErrorBuilder.New()
+        .SetMessage("User not found.")
+        .SetCode("NOT_FOUND")
+        .Build());
+    }
+
+    // 2) Instantiate a new Budget:
+    var budget = new Budget
+    {
+      Category = input.Category,
+      Limit = input.Limit,
+      UserId = input.UserId
+    };
+
+    // 3) Update the state of the entry to ADD to indicate EFcore to add the entry to the DB:
+    context.Budgets.Add(budget);
+    // 4) Attempt to commit the changes made to the DB => EFcore add the Budget to the DB:
+    await context.SaveChangesAsync();
+    return budget;
+  }
+
+
+
+  // Purpose: Handles the logic for updating a budget:
+  public async Task<Budget> UpdateBudget(Budget input, [Service] ApplicationDbContext context)
+  { // 1) Attempt to fetch the Budget to modify from the DB:
+    var retrievedBudget = await context.Budgets.FindAsync(input.Id);
+    if(retrievedBudget == null)
+    {
+      throw new GraphQLException(ErrorBuilder.New()
+        .SetMessage("Budget not found.")
+        .SetCode("NOT_FOUND")
+        .Build());
+    }
+
+    // 2) Update the fields of the Budget:
+    retrievedBudget.Category = input.Category;
+    retrievedBudget.Limit = input.Limit;
+    // 3) Update the state of the entry to MODIFIED to indicate to EFcore to update the entry in the DB:
+    context.Entry(retrievedBudget).State = EntityState.Modified;
+    // 4) Attempt to commit the changes made to the DB => EFcore updates the field to the DB:
+    await context.SaveChangesAsync();
+    return retrievedBudget;
+  }
+
+
+
+  // Purpose: Handles the logic for removing a Budget:
+  public async Task<bool> DeleteBudget(string id, [Service] ApplicationDbContext context)
+  { // 1) Attempt to fetch the Budget to remove from the DB:
+    var retrievedBudget = await context.Budgets.FindAsync(id);
+    if(retrievedBudget == null)
+    {
+      throw new GraphQLException(ErrorBuilder.New()
+        .SetMessage("Budget not found.")
+        .SetCode("NOT_FOUND")
+        .Build());
+    };
+
+    // 2) Update the state of the entry to DELETE to indicate EFcore to remove the entry from the DB:
+    context.Budgets.Remove(retrievedBudget);
+    // 3) Attempt to commit changes made to the DB => EFcore removes the entry from the DB:
+    await context.SaveChangesAsync();
+    return true;
+  }
+
 
 
 
