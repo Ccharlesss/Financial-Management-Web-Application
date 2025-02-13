@@ -1,4 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using System.Threading.Tasks;
 using ManageFinance.Models;
 using Microsoft.AspNetCore.Components.Forms;
 
@@ -6,12 +9,37 @@ using Microsoft.AspNetCore.Components.Forms;
 public class Mutation
 {
   private readonly IFinanceAccountService _financeAccountService;
+  private readonly UserManager<AppUser> _userManager;
+  private readonly SignInManager<AppUser> _signInManager;
+  private readonly RoleManager<IdentityRole> _roleManager;
+  private readonly IConfiguration _configuration;
+  private readonly EmailService _emailService;
+  private readonly ILogger<Mutation> _logger;
 
   // Dependency injection when the constructor is called:
-  public Mutation(IFinanceAccountService financeAccountService)
+  public Mutation(
+    IFinanceAccountService financeAccountService,
+    UserManager<AppUser> userManager,
+    SignInManager<AppUser> signInManager,
+    RoleManager<IdentityRole> roleManager,
+    IConfiguration configuration,
+    EmailService emailService,
+    ILogger<Mutation> logger)
   {
     _financeAccountService = financeAccountService;
+    _userManager = userManager;
+    _signInManager = signInManager;
+    _roleManager = roleManager;
+    _configuration = configuration;
+    _emailService = emailService;
+    _logger = logger;
   }
+
+
+
+
+
+
 
 
 //=============================================================================================================================
@@ -430,6 +458,14 @@ public class Mutation
     await context.SaveChangesAsync();
     return true;
   }
+
+
+
+//=============================================================================================================================
+  // Purpose: Handles the logic
+
+
+
 
 
 
