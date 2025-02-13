@@ -1,9 +1,18 @@
 using Microsoft.EntityFrameworkCore;
 using ManageFinance.Models;
+using Microsoft.AspNetCore.Components.Forms;
 
 // Purpose of the Mutation class: Handle the logic for POST, PUT & DELETE:
 public class Mutation
 {
+  private readonly IFinanceAccountService _financeAccountService;
+
+  // Dependency injection when the constructor is called:
+  public Mutation(IFinanceAccountService financeAccountService)
+  {
+    _financeAccountService = financeAccountService;
+  }
+
 
 //=============================================================================================================================
   // Purpose: Handle the creation of a Finance Account:
@@ -321,7 +330,106 @@ public class Mutation
     await context.SaveChangesAsync();
     return true;
   }
+//=============================================================================================================================
 
+
+
+
+
+
+
+
+
+//=============================================================================================================================
+  // Purpose: Handles the logic for creating a Transaction:
+  public async Task<Transaction> CreateTransaction(Transaction input, [Service] ApplicationDbContext context)
+  { // 1) Attempt to fetch the Finance Account from the DB:
+    var retrievedFinanceAccount = await context.Accounts
+      // FindAsync used to retrieve entity based on PK => not efficient for related entities
+      // More efficient other way as it uses a Join thus more efficient
+      // one database query is made, fetching both the account and its transactions.
+      .FirstOrDefaultAsync(fa => fa.Id == input.FinanceAccountId);
+    if(retrievedFinanceAccount == null)
+    {
+      throw new GraphQLException(ErrorBuilder.New()
+        .SetMessage("Finance account not found.")
+        .SetCode("NOT_FOUND")
+        .Build());
+    }
+
+    // 2) Instantiate a new Transaction:
+    var transaction = new Transaction
+    {
+      Description = input.Description,
+      Amount = input.Amount,
+      Date = input.Date,
+      IsExpense = input.IsExpense,
+      FinanceAccountId = input.FinanceAccountId,
+      FinanceAccount = retrievedFinanceAccount
+    };
+
+    // 3) Update the state of the entry to ADD to indicate EFcore to add the entry to the DB:
+    context.Transactions.Add(transaction);
+    // 4) Compute the new balance and update the Financial Account:
+    retrievedFinanceAccount.Balance = _financeAccountService.ComputeBalance(retrievedFinanceAccount);
+    await context.SaveChangesAsync();
+    return transaction;
+  }
+
+
+  // Purpose: Handles the logic for updating a Transaction:
+  public async Task<Transaction> UpdateTransaction(Transaction input, [Service] ApplicationDbContext context)
+  { // 1) Attempt to fetch the transaction to update from the DB:
+    var retrievedTransaction = await context.Transactions
+      .Include(t => t.FinanceAccount)
+      .FirstOrDefaultAsync(t => t.Id == input.Id);
+    if(retrievedTransaction == null)
+    {
+      throw new GraphQLException(ErrorBuilder.New()
+        .SetMessage("Transaction not found.")
+        .SetCode("NOT_FOUND")
+        .Build());
+    }
+
+    // 2) Update the fields of the retrieved transaction:
+    retrievedTransaction.Description = input.Description;
+    retrievedTransaction.Amount = input.Amount;
+    retrievedTransaction.Date = input.Date;
+    retrievedTransaction.IsExpense = input.IsExpense;
+    // 3) Update the state of the entry to MODIFIED to indicate EFcore to update the entry in the DB:
+    context.Entry(retrievedTransaction).State = EntityState.Modified;
+
+    // 4) Update the balance of the finance account:
+    retrievedTransaction.FinanceAccount.Balance = _financeAccountService.ComputeBalance(retrievedTransaction.FinanceAccount);
+    // 5) Attempt to commit changes made to the DB:
+    await context.SaveChangesAsync();
+    return retrievedTransaction;
+  }
+
+
+  // Purpose: Handles the logic for deleting a Transaction:
+  public async Task<bool> DeleteTransaction(string id, [Service] ApplicationDbContext context)
+  { // 1) Attempt to fetch the Transaction to remove from the DB:
+    var retrievedTransaction = await context.Transactions
+      .Include(t => t.FinanceAccount)
+      .FirstOrDefaultAsync(t => t.Id == id);
+    if(retrievedTransaction == null)
+    {
+      throw new GraphQLException(ErrorBuilder.New()
+        .SetMessage("Transaction not found.")
+        .SetCode("NOT_FOUND")
+        .Build());
+    }
+
+    // 2) Update the state of the entry to DELETE to indicate EFcore to remove the entry from the DB:
+    context.Transactions.Remove(retrievedTransaction);
+
+    // 3) Update the balance of the retrieved Finance account:
+    retrievedTransaction.FinanceAccount.Balance = _financeAccountService.ComputeBalance(retrievedTransaction.FinanceAccount);
+    // 4) Attempt to commit changes made to the DB:
+    await context.SaveChangesAsync();
+    return true;
+  }
 
 
 
