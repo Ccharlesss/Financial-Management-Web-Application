@@ -156,9 +156,93 @@ public class Mutation
     // 3) Save changes made to the DB => where EFcore removes the entry from DB:
     await context.SaveChangesAsync();
     return true;
+  }
+//=============================================================================================================================
 
+
+
+
+
+
+
+
+
+
+//=============================================================================================================================
+  // Purpose: Handle the logic for the creation of a Goal:
+  public async Task<Goal> CreateGoal(Goal input, [Service] ApplicationDbContext context)
+  { // 1) Attempt to fetch the user from the DB:
+    var user = await context.Users.FindAsync(input.UserId);
+    if(user == null)
+    {
+      throw new GraphQLException(ErrorBuilder.New()
+        .SetMessage("User not found.")
+        .SetCode("NOT_FOUND")
+        .Build());
+    }
+    
+    // 2) Instantiate a new Goal:
+    var goal = new Goal
+    {
+      GoalTitle = input.GoalTitle,
+      TargetAmount = input.TargetAmount,
+      CurrentAmount = input.CurrentAmount,
+      TargetDate = input.TargetDate,
+      UserId = input.UserId
+    };
+
+    // 3) Indicate EFcore to add the new entry to the DB:
+    context.Goals.Add(goal);
+    // 4) Attempt to commit the changes to the DB => EFcore saves the entry to the DB:
+    await context.SaveChangesAsync();
+    return goal;
   }
 
+
+  // Purpose: Handles the logic for updating a Goal:
+  public async Task<Goal> UpdateGoal(Goal input, [Service] ApplicationDbContext context)
+  { // 1) Attempt to fetch the Goal to modify from the DB:
+    var retrievedGoal = await context.Goals.FindAsync(input.Id);
+    if(retrievedGoal == null)
+    {
+      throw new GraphQLException(ErrorBuilder.New()
+        .SetMessage("Goal not found.")
+        .SetCode("NOT_FOUND")
+        .Build());
+    }
+
+    // 2) Update the states of the retrieved Goal:
+    retrievedGoal.GoalTitle = input.GoalTitle;
+    retrievedGoal.TargetAmount = input.TargetAmount;
+    retrievedGoal.CurrentAmount = input.CurrentAmount;
+    retrievedGoal.TargetDate = input.TargetDate;
+    // 3) Change the state of the entry to MODIFIED to indicate EFcore to update the entry to the DB:
+    context.Entry(retrievedGoal).State = EntityState.Modified;
+    // 4) Attempt to commit the changes made to the DB => EFcore update the entry in the DB:
+    await context.SaveChangesAsync();
+    return retrievedGoal;
+  }
+
+
+
+  // Purpose: Handles the logic for removing a Goal:
+  public async Task<bool> DeleteGoal(string id, [Service] ApplicationDbContext context)
+  { // 1) Attempt to fetch the goal to remove from the DB:
+    var retrievedGoal = await context.Goals.FindAsync(id);
+    if(retrievedGoal == null)
+    {
+      throw new GraphQLException(ErrorBuilder.New()
+        .SetMessage("Goal not found.")
+        .SetCode("NOT_FOUND")
+        .Build());
+    }
+
+    // 2) Update the state of the entry to DELETE to indicate to EFcore to remove the entry from the DB:
+    context.Goals.Remove(retrievedGoal);
+    // 3) Attempt to commit the changes made to the DB => EFcore will remove the entry from the DB:
+    await context.SaveChangesAsync();
+    return true;
+  }
 
 
 
