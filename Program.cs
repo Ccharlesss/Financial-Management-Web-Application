@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ManageFinance.Controllers;
 using ManageFinance.Services;
+using HotChocolate.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls("http://+:80");
@@ -29,7 +30,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 // ===========================================================================================================
 
-
 // ===========================================================================================================
 // Purpose: Enables to Use IdentityUser and IdentityRole as services:
 // Purpose: Store User and Role in DB and use Context class to interact with these entities:
@@ -49,6 +49,18 @@ builder.Services.AddScoped<EmailService>();
 
 // Purpose: Register FinanceAccountService for Dependency Injection:
 builder.Services.AddScoped<IFinanceAccountService, FinanceAccountService>();
+
+
+builder.Services
+    .AddGraphQLServer()
+    .AddQueryType<Query>()
+    .AddMutationType<Mutation>()
+    .AddType<AppUserType>()
+    .AddType<BudgetType>()
+    .AddType<AccountType>()
+    .AddType<GoalType>()
+    .AddType<TransactionType>();
+
 
 
 // ===========================================================================================================
@@ -88,6 +100,7 @@ builder.Logging.SetMinimumLevel(LogLevel.Information); // Set log level
 var app = builder.Build();
 
 
+app.MapGraphQL();
 
 
 
