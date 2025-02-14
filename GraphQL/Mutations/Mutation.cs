@@ -540,6 +540,20 @@ public class Mutation
   }
 
 
+  // Purpose: Handles the logic for loging out users:
+  public async Task<string> Logout()
+  {
+    // Sign out the user from the cookie-based authentication system:
+    await _signInManager.SignOutAsync();
+    return "Logged out successfully.";
+  }
+
+
+
+
+
+
+
 
 
 
