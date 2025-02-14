@@ -36,12 +36,6 @@ public class Mutation
   }
 
 
-
-
-
-
-
-
 //=============================================================================================================================
   // Purpose: Handle the creation of a Finance Account:
   public async Task<FinanceAccount> CreateFinanceAccount(FinanceAccount input, [Service] ApplicationDbContext context)
@@ -461,8 +455,62 @@ public class Mutation
 
 
 
+
+
 //=============================================================================================================================
-  // Purpose: Handles the logic
+  // Purpose: Handles the logic for Account creation:
+  public async Task<string> RegisterUser(AuthSchema input)
+  { // 1) Create an instance of AppUser:
+    var user = new AppUser {UserName = input.Email, Email = input.Email};
+    // 2) Attempt to create a new AppUser in the system using 'UserManager<AppUser>' service:
+    var result = await _userManager.CreateAsync(user, input.Password);
+
+    if(result.Succeeded)
+    { 
+      _logger.LogInformation("User successfully created: {UserId} {Email}", user.Id, input.Email);
+      // 3) Ensure the role exist in the AspNetRole table:
+      var roleExist = await _roleManager.RoleExistsAsync("User");
+
+      if(!roleExist)
+      { 
+        _logger.LogWarning("Role 'User' does not exist. Creating it now.");
+        // 3.1) Create the role in the AspNetRole table:
+        var roleResult = await _roleManager.CreateAsync(new IdentityRole("User"));
+
+        if(!roleResult.Succeeded)
+        {
+          _logger.LogError("Failed to create role 'User'. Errors: {Errors}", 
+            string.Join(", ", roleResult.Errors.Select(e => e.Description)));
+          return "Failed to create role 'User'.";
+        }
+      }
+
+      // 3.1) Assign the role = user to the newly created user:
+      var roleAssigned = await _userManager.AddToRoleAsync(user, "User");
+      if(!roleAssigned.Succeeded)
+      {
+        _logger.LogError("Failed to assign role 'User' to user {UserId} ({Email}). Errors: {Errors}", 
+            user.Id, input.Email, string.Join(", ", roleAssigned.Errors.Select(e => e.Description)));
+        return "Failed to assign role 'User' to the newly created user.";
+      }
+      _logger.LogInformation("Role 'User' successfully assigned to user {UserId} ({Email}).", user.Id, input.Email);
+
+      // 4) Generate an Email verification token to the newly created user:
+      var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+      // 5) URL-encode the token to make it safe to use in a URL query string:
+      var encodedToken = System.Net.WebUtility.UrlEncode(token);
+      // 6) Create the verification link with the encoded token:
+      string baseUrl = "https://yourfrontend.com";
+      string verificationLink = $"{baseUrl}/verify-email?userId={user.Id}&token={encodedToken}";
+      // 7) Send the verification link to the email of the user:
+      _emailService.SendEmail(user.Email, "Email Verification", $"Verify your email: {verificationLink}");
+      _logger.LogInformation("User registration process completed successfully for {Email}.", user.Email);
+      return "User registered successfully. Email verification link sent.";
+    }
+    return string.Join(", ", result.Errors.Select(e => e.Description));
+
+  }
+
 
 
 

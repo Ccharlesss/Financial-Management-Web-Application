@@ -68,8 +68,7 @@ namespace ManageFinance.Controllers
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)
-            {
-                // Ensure the role exist in the AspNetRole table:
+            {   // Ensure the role exist in the AspNetRole table:
                 var roleExist = await _userManager.IsInRoleAsync(user, "User");
                 // Case where the role was not assigned to the user:
                 if(!roleExist){
