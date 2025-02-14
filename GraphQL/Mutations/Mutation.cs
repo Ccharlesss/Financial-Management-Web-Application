@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 using ManageFinance.Models;
-using Microsoft.AspNetCore.Components.Forms;
+using ManageFinance.Services;
 
 // Purpose of the Mutation class: Handle the logic for POST, PUT & DELETE:
 public class Mutation
@@ -16,6 +16,8 @@ public class Mutation
   private readonly EmailService _emailService;
   private readonly ILogger<Mutation> _logger;
 
+  private readonly IJwtService _jwtService;
+
   // Dependency injection when the constructor is called:
   public Mutation(
     IFinanceAccountService financeAccountService,
@@ -24,7 +26,8 @@ public class Mutation
     RoleManager<IdentityRole> roleManager,
     IConfiguration configuration,
     EmailService emailService,
-    ILogger<Mutation> logger)
+    ILogger<Mutation> logger,
+    IJwtService jwtService)
   {
     _financeAccountService = financeAccountService;
     _userManager = userManager;
@@ -33,6 +36,7 @@ public class Mutation
     _configuration = configuration;
     _emailService = emailService;
     _logger = logger;
+    _jwtService = jwtService;
   }
 
 
@@ -508,7 +512,31 @@ public class Mutation
       return "User registered successfully. Email verification link sent.";
     }
     return string.Join(", ", result.Errors.Select(e => e.Description));
+  }
 
+
+  // Purpose: Handles the logic for signing new users in:
+  public async Task<string> login(AuthSchema input)
+  { // 1) Attempt to sign in with the user's credentials:
+    var result = await _signInManager.PasswordSignInAsync(input.Email, input.Password, isPersistent:false, lockoutOnFailure:false);
+
+    if(!result.Succeeded)
+    { _logger.LogInformation("invalig login attempt. Either the username or password is incorrect.");
+      return "Invalid login attempt.";
+    }
+
+    // 2) Retrieve the user's data:
+    var user = await _userManager.FindByEmailAsync(input.Email);
+    if(user == null)
+    {
+      return "User not found.";
+    }
+    
+    // 3) Get the role:
+    var roles=  await _userManager.GetRolesAsync(user);
+    // 4) Generate a JWT token for the user:
+    var token = _jwtService.GenerateJwtToken(user, roles);
+    return token;
   }
 
 
