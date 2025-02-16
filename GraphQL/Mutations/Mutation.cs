@@ -626,6 +626,31 @@ public class Mutation
 
 
 
+  // Purpose: Handles the logic for updating user's role:
+  public async Task<string> UpdateRole(UpdateRoleSchema input)
+  { // 1) Attempt to retrieve the role to update from the DB:
+    var retrievedRole = await _roleManager.FindByIdAsync(input.RoleId);
+    if(retrievedRole == null)
+    {
+      return "Role not found.";
+    }
+
+    // 2) Update the role:
+    retrievedRole.Name = input.NewRoleName;
+    // 3) Attempt to commit the changes made to the role name:
+    var result = await _roleManager.UpdateAsync(retrievedRole);
+    if(result.Succeeded)
+    {
+      return "Role successfully updated.";
+    }
+
+    return string.Join(", ", result.Errors.Select(e => e.Description));
+
+
+  }
+
+
+
 
 
 
