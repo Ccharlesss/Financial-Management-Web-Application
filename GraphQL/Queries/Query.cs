@@ -8,7 +8,7 @@ public class Query
 {
   private readonly UserManager<AppUser> _userManager;
 
-  private readonly RoleManager<AppUser> _roleManager;
+  private readonly RoleManager<IdentityRole> _roleManager;
 
   private readonly IConfiguration _configuration;
 
@@ -17,7 +17,7 @@ public class Query
 
 public Query(
   UserManager<AppUser> userManager,
-  RoleManager<AppUser> roleManager,
+  RoleManager<IdentityRole> roleManager,
   IConfiguration configuration,
   ILogger<Query> logger)
   
@@ -50,9 +50,16 @@ public Query(
     }
 
     return userList;
-
   }
 
+
+
+  // Purpose: Handles the logic for listing roles:
+  public async Task<List<IdentityRole>> GetRoles()
+  { // 1) Fetches roles from the AspNetRoles table:
+    var roles = await _roleManager.Roles.ToListAsync(); 
+    return roles;
+  }
 
 
 
