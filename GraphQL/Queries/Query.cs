@@ -62,6 +62,20 @@ public Query(
   }
 
 
+  // Purpuse: Handles the logic to fetch a role given its roleId:
+  public async Task<IdentityRole> GetRole(string roleId)
+  { // 1) Attempt to retrieve the role from the DB:
+    var retrievedRole = await _roleManager.FindByIdAsync(roleId);
+    if(retrievedRole == null)
+    {
+      _logger.LogWarning($"The role with the following roleId = {roleId} couldn't be found.");
+      throw new Exception($"Role with the ID {roleId} not found.");
+    }
+
+    return retrievedRole;
+  }
+
+
 
 
 
