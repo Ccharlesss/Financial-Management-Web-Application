@@ -645,7 +645,27 @@ public class Mutation
     }
 
     return string.Join(", ", result.Errors.Select(e => e.Description));
+  }
 
+
+
+  // Purpose: Handles the logic for removing a role:
+  public async Task<string> DeleteRole(string roleId)
+  { // 1) Attempt to retrieve the role to remove from the DB:
+    var retrievedRole = await _roleManager.FindByIdAsync(roleId);
+    if(retrievedRole == null)
+    {
+      return "Role not found.";
+    }
+
+    // 2) Attempt to remove the role:
+    var result = await _roleManager.DeleteAsync(retrievedRole);
+    if(result.Succeeded)
+    {
+      return "Role successfully removed";
+    }
+
+    return string.Join(", ", result.Errors.Select(e => e.Description));
 
   }
 
