@@ -549,6 +549,51 @@ public class Mutation
   }
 
 
+  // Purpose: Handles the logic for updating user's password:
+  public async Task<string> updatePassword(UpdatePasswordSchema input)
+  { // 1) Attempt to retrieve user from the DB:
+    var user = await _userManager.FindByEmailAsync(input.Email);
+    if(user == null)
+    {
+      return "User not found.";
+    }
+
+    // 2) Attempt to reset user's password:
+    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+    var result = await _userManager.ResetPasswordAsync(user, token, input.NewPassword);
+    if(result.Succeeded)
+    {
+      return "Password changed successfully";
+    }
+    return string.Join(", ", result.Errors.Select(e => e.Description));
+  }
+
+
+
+  // Purpose: Handles the logic for verifying user's email when he signs up:
+  public async Task<string> VerifyEmail(string userId, string token)
+  { // 1) Decode the token received:
+    var decodedToken = System.Net.WebUtility.UrlDecode(token);
+    // 2) Retrieve the user corresponding to the userID:
+    var user = await _userManager.FindByIdAsync(userId);
+    if(user == null)
+    {
+      return "User not found.";
+    }
+
+    // 3) Attempt to verify that the email confirmation token matches the user:
+    var result = await _userManager.ConfirmEmailAsync(user, decodedToken);
+    if(result.Succeeded)
+    {
+      return "Email verification successful.";
+    }
+
+    return string.Join(", ", result.Errors.Select(e => e.Description));
+  }
+
+
+  
+
 
 
 
