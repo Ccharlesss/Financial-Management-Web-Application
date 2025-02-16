@@ -666,9 +666,34 @@ public class Mutation
     }
 
     return string.Join(", ", result.Errors.Select(e => e.Description));
-
   }
+  
 
+  // Purpose: Handles the logic for assigning a role to a user:
+  public async Task<string> AssignRole(AssignRoleSchema input)
+  { // 1) Attempt to retrieve the user from the DB:
+    var user = await _userManager.FindByIdAsync(input.UserId);
+    if(user == null)
+    {
+      return "User not found";
+    }
+
+    // 2) Assess if the role exist:
+    var roleExist = await _roleManager.RoleExistsAsync(input.RoleName);
+    if(!roleExist)
+    {
+      return "Role doesn't exist.";
+    }
+
+    // 3) Attempt to assign the role to the user:
+    var result = await _userManager.AddToRoleAsync(user, input.RoleName);
+    if(result.Succeeded)
+    {
+      return "Role successfully assigned to user.";
+    }
+
+    return string.Join(", ", result.Errors.Select(e => e.Description));
+  }
 
 
 
