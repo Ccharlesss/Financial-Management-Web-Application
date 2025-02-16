@@ -590,9 +590,40 @@ public class Mutation
 
     return string.Join(", ", result.Errors.Select(e => e.Description));
   }
+//=============================================================================================================================
 
 
-  
+
+
+
+
+
+
+
+
+
+
+//=============================================================================================================================
+  // Purpose: Handles the logic for creating a role:
+  public async Task<string> CreateRole(CreateRoleSchema input)
+  { // 1) Assess if a RoleName was provided:
+    if(string.IsNullOrEmpty(input.RoleName))
+    {
+      return "RoleName field is required.";
+    }
+
+    // 2) Instantiate a new IdentityRole:
+    var role = new IdentityRole(input.RoleName);
+    // 3) Attempt to create the new role:
+    var result = await _roleManager.CreateAsync(role);
+    if(result.Succeeded)
+    {
+      return "Role successfully created.";
+    }
+
+    return string.Join(", " ,result.Errors.Select(e => e.Description));
+  }
+
 
 
 
