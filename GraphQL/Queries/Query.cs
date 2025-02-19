@@ -1,16 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 using ManageFinance.Models;
 using ManageFinance.Services;
+using HotChocolate;
+using HotChocolate.Resolvers; 
+using HotChocolate.Execution;
 public class Query
 {
   private readonly UserManager<AppUser> _userManager;
 
   private readonly RoleManager<IdentityRole> _roleManager;
-
-  private readonly IConfiguration _configuration;
 
   private readonly ILogger<Query> _logger;
 
@@ -18,13 +18,11 @@ public class Query
 public Query(
   UserManager<AppUser> userManager,
   RoleManager<IdentityRole> roleManager,
-  IConfiguration configuration,
   ILogger<Query> logger)
   
   {
     _userManager = userManager;
     _roleManager = roleManager;
-    _configuration = configuration;;
     _logger = logger;
   }
 
@@ -53,7 +51,29 @@ public Query(
   }
 
 
+  // Purpose: Handles the logic for fetching a user:
+  public async Task<object> GetUser(string userId)
+  { // 1) Fetch the user from the DB:
+    var retrievedUser = await _userManager.FindByIdAsync(userId);
+    if(retrievedUser == null)
+    {
+      _logger.LogWarning($"User with the following userId = {userId} couldnpt be found.");
+      return "User not found.";
+    }
 
+    // 2) Fetch the role(s) assigned to the user:
+    var  retrievedRole = await _userManager.GetRolesAsync(retrievedUser);
+    return new
+    {
+      Id = retrievedUser.Id,
+      UserName = retrievedUser.UserName,
+      Email = retrievedUser.Email,
+      Roles = retrievedRole
+    };
+  }
+
+
+  //=============================================================================================================================
   // Purpose: Handles the logic for listing roles:
   public async Task<List<IdentityRole>> GetRoles()
   { // 1) Fetches roles from the AspNetRoles table:
@@ -69,11 +89,45 @@ public Query(
     if(retrievedRole == null)
     {
       _logger.LogWarning($"The role with the following roleId = {roleId} couldn't be found.");
-      throw new Exception($"Role with the ID {roleId} not found.");
+      throw new GraphQLException(ErrorBuilder.New()
+        .SetMessage($"Role with the following roleId = {roleId} couldnt be found")
+        .SetCode("NOT_FOUND")
+        .Build());
     }
-
     return retrievedRole;
   }
+
+  //=============================================================================================================================
+
+
+
+
+
+
+
+
+    //=============================================================================================================================
+    // Purpose: Handles the logic to fetch all users accounts:
+    public async Task<List<FinanceAccount>> GetUserFinanceAccounts(string userId)
+    { // 1) Attempt to retrieve the user:
+      var retrievedUser = await _userManager.Users
+        .Include(u => u.Accounts)
+        .FirstOrDefaultAsync(u => u.Id == userId);
+
+      if(retrievedUser == null)
+      {
+        throw new GraphQLException(ErrorBuilder.New()
+          .SetMessage($"User with the userId = {userId} not found.")
+          .SetCode("NOT_FOUND")
+          .Build());
+      }
+
+      // 2) Return the list of finance accounts directly:
+      return retrievedUser.Accounts.ToList();
+    }
+
+
+
 
 
 
