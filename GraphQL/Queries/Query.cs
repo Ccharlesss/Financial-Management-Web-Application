@@ -146,6 +146,28 @@ public Query(
    }
 
 
+   //=============================================================================================================================
+   // Purpose: Handles the logic to fetch's users Budgets:
+  public async Task<List<Budget>> GetUserBudgets(string userId)
+  { // 1) Attempt to fetch the user from the DB:
+    var retrievedUser = await _userManager.Users
+      .Include(u => u.Budgets)
+      .FirstOrDefaultAsync(u => u.Id == userId);
+    
+    if(retrievedUser == null)
+    {
+      throw new GraphQLException(ErrorBuilder.New()
+        .SetMessage($"Users with the following userId = {userId} not found.")
+        .Build());
+    }
+
+    return retrievedUser.Budgets.ToList();
+  }
+
+
+
+
+
 
 
 
