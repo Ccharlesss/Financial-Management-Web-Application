@@ -147,7 +147,7 @@ public Query(
 
 
    //=============================================================================================================================
-   // Purpose: Handles the logic to fetch's users Budgets:
+   // Purpose: Handles the logic to fetch users Budgets:
   public async Task<List<Budget>> GetUserBudgets(string userId)
   { // 1) Attempt to fetch the user from the DB:
     var retrievedUser = await _userManager.Users
@@ -158,12 +158,32 @@ public Query(
     {
       throw new GraphQLException(ErrorBuilder.New()
         .SetMessage($"Users with the following userId = {userId} not found.")
+        .SetCode("NOT_FOUND")
         .Build());
     }
 
     return retrievedUser.Budgets.ToList();
   }
 
+
+   //=============================================================================================================================
+   // Purpose: Handles the logic to fetch users Goals:
+   public async Task<List<Goal>> GetUserGoals(string userId)
+   {  // 1) Attempt to fetch the user from the DB:
+      var retrievedUser = await _userManager.Users
+        .Include(u => u.Goals)
+        .FirstOrDefaultAsync(u => u.Id == userId);
+
+      if(retrievedUser == null)
+      {
+        throw new GraphQLException(ErrorBuilder.New()
+          .SetMessage($"User with the following userId = {userId} not found.")
+          .SetCode("NOT_FOUMD")
+          .Build());
+      }
+
+      return retrievedUser.Goals.ToList();
+   }
 
 
 
