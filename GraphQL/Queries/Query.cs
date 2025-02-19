@@ -126,8 +126,24 @@ public Query(
       return retrievedUser.Accounts.ToList();
     }
 
+   //=============================================================================================================================
+   // Purpose: Handles the logic to fetch user's investments:
+   public async Task<List<Investment>> GetUserInvestments(string userId)
+   {  // 1) Attempt to fetch the user from the DB:
+      var retrievedUser = await _userManager.Users
+        .Include(u => u.Investments)
+        .FirstOrDefaultAsync(u => u.Id == userId);
 
+      if(retrievedUser == null)
+      {
+        throw new GraphQLException(ErrorBuilder.New()
+          .SetMessage($"User with the following userId = {userId} not found.")
+          .SetCode("NOT_FOUND")
+          .Build());
+      }
 
+      return retrievedUser.Investments.ToList();
+   }
 
 
 
