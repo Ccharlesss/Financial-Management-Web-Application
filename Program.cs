@@ -51,15 +51,17 @@ builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<IFinanceAccountService, FinanceAccountService>();
 
 
-builder.Services
-    .AddGraphQLServer()
-    .AddQueryType<Query>()
-    .AddMutationType<Mutation>()
-    .AddType<AppUserType>()
-    .AddType<BudgetType>()
-    .AddType<AccountType>()
-    .AddType<GoalType>()
-    .AddType<TransactionType>();
+// builder.Services
+//     .AddGraphQLServer()
+//     .AddQueryType<Query>()
+//     .AddMutationType<Mutation>()
+//     .AddType<AppUserType>()
+//     .AddType<BudgetType>()
+//     .AddType<AccountType>()
+//     .AddType<GoalType>()
+//     .AddType<TransactionType>()
+//     .AddType<InvestmentType>();
+    
 
 
 
@@ -100,7 +102,7 @@ builder.Logging.SetMinimumLevel(LogLevel.Information); // Set log level
 var app = builder.Build();
 
 
-app.MapGraphQL();
+// app.MapGraphQL();
 
 
 
@@ -148,4 +150,7 @@ using (var scope = app.Services.CreateScope())
 
 
 app.Run();
+
+
+
 

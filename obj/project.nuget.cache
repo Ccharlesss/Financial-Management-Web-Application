@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "3Zr+vUiiYLnoL5pzojgokL5SFJfChWvAB0K2JQcDN9ZMWpfx0MCHnV0rd2FhUHEFx0UZmaEWYpEsG+y7wd5DlA==",
+  "dgSpecHash": "s/GkZn8348dOhARF/boL3dcgiGt+lg1hhbAtAzH4Y4bw+RxlEc+DPNzEl+FLrs93gY68ZsuL/P04eZrT3MsGjg==",
   "success": true,
-  "projectFilePath": "/Users/romainkuhne/Documents/ManageFinance/ManageFinance.csproj",
+  "projectFilePath": "/Users/romainkuhne/Documents/ManageFinanceSolution/ManageFinance/ManageFinance.csproj",
   "expectedPackageFiles": [
     "/Users/romainkuhne/.nuget/packages/azure.core/1.35.0/azure.core.1.35.0.nupkg.sha512",
     "/Users/romainkuhne/.nuget/packages/azure.identity/1.10.3/azure.identity.1.10.3.nupkg.sha512",

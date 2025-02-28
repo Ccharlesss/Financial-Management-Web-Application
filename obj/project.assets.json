@@ -9911,11 +9911,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/romainkuhne/Documents/ManageFinance/ManageFinance.csproj",
+      "projectUniqueName": "/Users/romainkuhne/Documents/ManageFinanceSolution/ManageFinance/ManageFinance.csproj",
       "projectName": "ManageFinance",
-      "projectPath": "/Users/romainkuhne/Documents/ManageFinance/ManageFinance.csproj",
+      "projectPath": "/Users/romainkuhne/Documents/ManageFinanceSolution/ManageFinance/ManageFinance.csproj",
       "packagesPath": "/Users/romainkuhne/.nuget/packages/",
-      "outputPath": "/Users/romainkuhne/Documents/ManageFinance/obj/",
+      "outputPath": "/Users/romainkuhne/Documents/ManageFinanceSolution/ManageFinance/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/romainkuhne/.nuget/NuGet/NuGet.Config"
