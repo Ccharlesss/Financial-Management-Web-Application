@@ -1,6 +1,9 @@
-public class AuthSchema
+namespace ManageFinance.Schemas
 {
-  public string Email { get; set; } = null!;
-
-  public string Password { get; set; } = null!;
+  public class AuthSchema
+  {
+    public string Email { get; set; } = null!;
+    public string Password { get; set; } = null!;
+  }
 }
+
