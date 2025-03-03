@@ -243,6 +243,7 @@ using System.Security.Claims;
 using System.Text;
 using ManageFinance.Schemas;
 using ManageFinance.Services;
+using ManageFinance.Response;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -256,22 +257,22 @@ namespace ManageFinance.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IEmailService _emailService;
-        private readonly IConfiguration _configuration;
         private readonly IUrlHelper _urlHelper; // Enable during testing only
+        private readonly IJwtService _jwtService;
 
         // Constructor: Add IUrlHelper as a dependency
         public AccountController(
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
             IEmailService emailService,
-            IConfiguration configuration,
-            IUrlHelper urlHelper)
+            IUrlHelper urlHelper,
+            IJwtService jwtService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailService = emailService;
-            _configuration = configuration;
             _urlHelper = urlHelper;
+            _jwtService = jwtService;
         }
 
 
@@ -280,12 +281,14 @@ namespace ManageFinance.Controllers
         //     UserManager<AppUser> userManager,
         //     SignInManager<AppUser> signInManager,
         //     IEmailService emailService,
-        //     IConfiguration configuration)
+        //     IConfiguration configuration
+        //     IJwtService jwtService)
         // {
         //     _userManager = userManager;
         //     _signInManager = signInManager;
         //     _emailService = emailService;
         //     _configuration = configuration;
+        //     _jwtService = jwtService;
         // }
 
         [HttpPost("register")]
@@ -377,8 +380,8 @@ namespace ManageFinance.Controllers
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 var roles = await _userManager.GetRolesAsync(user);
-                var token = GenerateJwtToken(user, roles);
-                return Ok(new { Token = token });
+                var token = _jwtService.GenerateJwtToken(user, roles);
+                return Ok(new LoginResponse{ Token = token });
             }
 
             // Returns a 401 Unauthorized if login unsuccessful
@@ -392,36 +395,36 @@ namespace ManageFinance.Controllers
             return Ok("Logged out.");
         }
 
-        private string GenerateJwtToken(AppUser user, IList<string> roles)
-        {
-            // Initializes a new list of Claim objects
-            var claims = new List<Claim>
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Email), // The subject of the claim = user's email
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // JWT ID claim = unique ID for the token
-            };
+        // private string GenerateJwtToken(AppUser user, IList<string> roles)
+        // {
+        //     // Initializes a new list of Claim objects
+        //     var claims = new List<Claim>
+        //     {
+        //         new Claim(JwtRegisteredClaimNames.Sub, user.Email), // The subject of the claim = user's email
+        //         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // JWT ID claim = unique ID for the token
+        //     };
 
-            // Each permission the user has will be added to the claims list
-            foreach (var role in roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-            }
+        //     // Each permission the user has will be added to the claims list
+        //     foreach (var role in roles)
+        //     {
+        //         claims.Add(new Claim(ClaimTypes.Role, role));
+        //     }
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])); // Generate the key
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256); // Generate the signature
-            var expires = DateTime.Now.AddHours(Convert.ToDouble(_configuration["Jwt:ExpireHours"])); // Generate expiration time
+        //     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])); // Generate the key
+        //     var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256); // Generate the signature
+        //     var expires = DateTime.Now.AddHours(Convert.ToDouble(_configuration["Jwt:ExpireHours"])); // Generate expiration time
 
-            // Create and return the JWT as a string
-            var token = new JwtSecurityToken(
-                _configuration["Jwt:Issuer"], // Payload -> Issuer: The entity that issued the JWT = WebApp
-                _configuration["Jwt:Issuer"], // Payload -> Audience: Who the token is issued to
-                claims, // Payload -> Claims
-                expires: expires, // Payload -> Expiration date 
-                signingCredentials: creds // Signature
-            );
+        //     // Create and return the JWT as a string
+        //     var token = new JwtSecurityToken(
+        //         issuer: _configuration["Jwt:Issuer"], // Payload -> Issuer: The entity that issued the JWT = WebApp
+        //         audience: _configuration["Jwt:Issuer"], // Payload -> Audience: Who the token is issued to
+        //         claims: claims, // Payload -> Claims
+        //         expires: expires, // Payload -> Expiration date 
+        //         signingCredentials: creds // Signature
+        //     );
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
+        //     return new JwtSecurityTokenHandler().WriteToken(token);
+        // }
 
         [HttpPut("change-password")]
         public async Task<IActionResult> ChangePassword(UpdatePasswordSchema data)

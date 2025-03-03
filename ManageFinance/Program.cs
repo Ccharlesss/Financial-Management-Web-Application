@@ -202,6 +202,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();  // Modified: registe
 
 // Purpose: Register FinanceAccountService for Dependency Injection:
 builder.Services.AddScoped<IFinanceAccountService, FinanceAccountService>();
+builder.Services.AddScoped<IJwtService, TokenService>();
 
 // ===========================================================================================================
 // Purpose: Implement a new service to enable the web application to use JWT token:
