@@ -76,36 +76,83 @@ namespace ManageFinance.Controllers
 //=============================================================================================================================
 //                                              PURPOSE: UPDATE A GOAL
         // PUT: api/Goals/5
+        // [HttpPut("{id}")]
+        // public async Task<IActionResult> PutGoal(string id, Goal goal)
+        // {
+        //     // 1) Retrieve the goal with the entered id:
+        //     var retrievedGoal = await _context.Goals.FindAsync(id);
+        //     // Case where the goal with the id doesn't exist:
+        //     if(retrievedGoal == null)
+        //     {
+        //         return NotFound("Goal not found.");
+        //     }
+
+        //     // 3) Update the fields of the retrieved goal:
+        //     retrievedGoal.GoalTitle = goal.GoalTitle;
+        //     retrievedGoal.TargetAmount = goal.TargetAmount;
+        //     retrievedGoal.CurrentAmount = goal.CurrentAmount;
+        //     retrievedGoal.TargetDate = goal.TargetDate;
+        //     // 4) Explicitly indicate EFCore to change the state of the retrievedGoal as modified:
+        //     _context.Entry(retrievedGoal).State = EntityState.Modified;
+
+        //     // 5) Save the changes made to the entry:
+        //     try
+        //     {
+        //         await _context.SaveChangesAsync();
+        //     }
+        //     catch(DbUpdateConcurrencyException)
+        //     {
+        //         if(!GoalExists(id))
+        //         {
+        //             return NotFound();
+        //         }
+        //         else
+        //         {
+        //             throw;
+        //         }
+        //     }
+
+        //     return NoContent();
+        // }
+
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGoal(string id, Goal goal)
-        {
-            // 1) Retrieve the goal with the entered id:
+        {   // Assess if the user is Authenticated:
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(userId == null)
+            {
+                return Unauthorized("User not authenticated.");
+            }
+
+            // Retrieve the goal to modify from the DB:
             var retrievedGoal = await _context.Goals.FindAsync(id);
-            // Case where the goal with the id doesn't exist:
             if(retrievedGoal == null)
             {
                 return NotFound("Goal not found.");
             }
 
-            // 3) Update the fields of the retrieved goal:
+            // Update the fields:
             retrievedGoal.GoalTitle = goal.GoalTitle;
             retrievedGoal.TargetAmount = goal.TargetAmount;
             retrievedGoal.CurrentAmount = goal.CurrentAmount;
             retrievedGoal.TargetDate = goal.TargetDate;
-            // 4) Explicitly indicate EFCore to change the state of the retrievedGoal as modified:
+            // 4) Explicitly indicate to EFcore that the fields of the Goal were modified:
             _context.Entry(retrievedGoal).State = EntityState.Modified;
 
-            // 5) Save the changes made to the entry:
+            // 5) Attempt to save the changes made to the entry:
             try
             {
                 await _context.SaveChangesAsync();
             }
+
             catch(DbUpdateConcurrencyException)
             {
                 if(!GoalExists(id))
                 {
                     return NotFound();
                 }
+
                 else
                 {
                     throw;
@@ -114,6 +161,15 @@ namespace ManageFinance.Controllers
 
             return NoContent();
         }
+
+
+
+
+
+
+
+
+
 //=============================================================================================================================
 
 
