@@ -6,11 +6,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ManageFinance.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace ManageFinance.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class GoalsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -124,37 +127,61 @@ namespace ManageFinance.Controllers
 //=============================================================================================================================
 //                                              PURPOSE: CREATE A GOAL:
         // POST: api/Goals
+        // [HttpPost]
+        // public async Task<ActionResult<Goal>> PostGoal(Goal goal)
+        // {   // 1) Retrieve the user from DB:
+        //     var user = await _context.Users.FindAsync(goal.UserId);
+        //     // Case where the user doesn't exist => Return 404 not found:
+        //     if(user==null)
+        //     {
+        //         return NotFound("User not found");
+        //     }
+        //     // 2) Set the User navigation property:
+        //     goal.User = user;
+        //     // 3) Create the goal:
+        //     _context.Goals.Add(goal);
+        //     // 4) Attempt to save the entry into the database:
+        //     try
+        //     {
+        //         await _context.SaveChangesAsync();
+        //     }
+        //     catch(DbUpdateConcurrencyException)
+        //     {
+        //         if(GoalExists(goal.Id))
+        //         {
+        //             return Conflict();
+        //         }
+        //         else
+        //         {
+        //             throw;
+        //         }
+        //     }
+        //     return CreatedAtAction("GetGoal", new{id = goal.Id}, goal);
+        // }
+
+
+
         [HttpPost]
         public async Task<ActionResult<Goal>> PostGoal(Goal goal)
-        {   // 1) Retrieve the user from DB:
-            var user = await _context.Users.FindAsync(goal.UserId);
-            // Case where the user doesn't exist => Return 404 not found:
-            if(user==null)
+        {
+            if (HttpContext.User.Identity.IsAuthenticated)
             {
-                return NotFound("User not found");
-            }
-            // 2) Set the User navigation property:
-            goal.User = user;
-            // 3) Create the goal:
-            _context.Goals.Add(goal);
-            // 4) Attempt to save the entry into the database:
-            try
-            {
+                var user = await _context.Users.FindAsync(goal.UserId);
+                if (user == null)
+                {       
+                    return NotFound("User not found");
+                }
+                goal.User = user;
+                _context.Goals.Add(goal);
                 await _context.SaveChangesAsync();
+                return CreatedAtAction("GetGoal", new { id = goal.Id }, goal);
             }
-            catch(DbUpdateConcurrencyException)
+            else
             {
-                if(GoalExists(goal.Id))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+            return Unauthorized(); // This should return 401 for unauthenticated users
             }
-            return CreatedAtAction("GetGoal", new{id = goal.Id}, goal);
         }
+
 //=============================================================================================================================
 
 
@@ -167,22 +194,49 @@ namespace ManageFinance.Controllers
 //=============================================================================================================================
 //                                              PURPOSE: REMOVE A GOAL
         // DELETE: api/Goals/5
+        // [HttpDelete("{id}")]
+        // public async Task<IActionResult> DeleteGoal(string id)
+        // {
+        //     // 1) Retrieve the goal from the DB:
+        //     var goal = await _context.Goals.FindAsync(id);
+        //     if(goal==null)
+        //     {
+        //         return NotFound("Goal not found.");
+        //     }
+
+        //     // 2) Indicate to EFCore the state for this entry is Delete:
+        //     _context.Goals.Remove(goal);
+        //     // 3) Save the changes made and remove goal => Delete the entry:
+        //     await _context.SaveChangesAsync();
+        //     return NoContent();
+        // }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGoal(string id)
         {
-            // 1) Retrieve the goal from the DB:
-            var goal = await _context.Goals.FindAsync(id);
-            if(goal==null)
+            // 1) Get the authenticated user's ID
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized("User not authenticated.");
+            }
+
+            // 2) Retrieve the goal from the DB:
+            var goal = await _context.Goals.FirstOrDefaultAsync(g => g.Id == id && g.UserId == userId);
+            if (goal == null)
             {
                 return NotFound("Goal not found.");
             }
 
-            // 2) Indicate to EFCore the state for this entry is Delete:
+            // 3) Delete the goal:
             _context.Goals.Remove(goal);
-            // 3) Save the changes made and remove goal => Delete the entry:
             await _context.SaveChangesAsync();
+    
             return NoContent();
         }
+
+
+
 //=============================================================================================================================
 
 

@@ -281,13 +281,13 @@ namespace ManageFinance.Controllers
         //     UserManager<AppUser> userManager,
         //     SignInManager<AppUser> signInManager,
         //     IEmailService emailService,
-        //     IConfiguration configuration
+        //     // IConfiguration configuration
         //     IJwtService jwtService)
         // {
         //     _userManager = userManager;
         //     _signInManager = signInManager;
         //     _emailService = emailService;
-        //     _configuration = configuration;
+        //     // _configuration = configuration;
         //     _jwtService = jwtService;
         // }
 
