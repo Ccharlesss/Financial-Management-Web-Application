@@ -7,11 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ManageFinance.Models;
 using System.Data;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace ManageFinance.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class InvestmentsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -125,19 +128,26 @@ namespace ManageFinance.Controllers
         // POST: api/Investments
         [HttpPost]
         public async Task<ActionResult<Investment>> PostInvestment(Investment investment)
-        {   // 1) Retrieve the user from DB:
-            var user = await _context.Users.FindAsync(investment.UserId);
-            if(user==null)
+        {   // 1) Assess the user is authenticated:
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(userId == null)
+            {
+                return Unauthorized("User not authenticated.");
+            }
+
+            // 2) Retrieve the user based on the id:
+            var user = await _context.Users.FindAsync(userId);
+            if(user == null)
             {
                 return NotFound("User not found.");
             }
 
-            // 2) Set the user's navigation property:
+            // 3) Set the user's navigation property:
             investment.User = user;
-            // 3) Create the investment:
+            // 4) Create the investment:
             _context.Investments.Add(investment);
-
-            // 4) Attempt to save the entry into the DB:
+            
+            // 5) Attempt to save the entry into the DB:
             try
             {
                 await _context.SaveChangesAsync();
@@ -148,12 +158,14 @@ namespace ManageFinance.Controllers
                 {
                     return Conflict();
                 }
+
                 else
                 {
                     throw;
                 }
             }
-            return CreatedAtAction("GetInvestment", new {id = investment.Id}, investment);
+
+            return CreatedAtAction("GetInvesment", new {id = investment.Id}, investment);
         }
 //=============================================================================================================================
 
@@ -175,18 +187,26 @@ namespace ManageFinance.Controllers
         // DELETE: api/Investments/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteInvestment(string id)
-        {   // 1) Retrieve the investment from the DB:
-            var investment = await _context.Investments.FindAsync(id);
-            if(investment==null)
+        {   // 1) Assess the user is authenticated:
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(userId == null)
             {
-                return NotFound("Investment Not found.");
+                return Unauthorized("User not authenticated.");
             }
 
-            // 2) Update the state of the investment retrieved to Delete to indicate to EFcore to remove it when change is saved to DB:
+            // 2) Attempt to retrieve the investment from the DB:
+            var investment = await _context.Investments.FindAsync(id);
+            if(investment == null)
+            {
+                return NotFound("Investment not found");
+            }
+
+            // 3) Update the state of the investment retrieved to Delete to indicate EFcore to remove it when change is saved to DB:
             _context.Investments.Remove(investment);
-            // 3) Save the changes made and remove the investment:
+            // 4) Save the changes made and remove the investment:
             await _context.SaveChangesAsync();
             return NoContent();
+
         }
 //=============================================================================================================================
 
