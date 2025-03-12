@@ -6,11 +6,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ManageFinance.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace ManageFinance.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class BudgetsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -114,17 +117,22 @@ namespace ManageFinance.Controllers
         // POST: api/Budgets
         [HttpPost]
         public async Task<ActionResult<Budget>> PostBudget(Budget budget)
-        {
-            // 1) Ensures the User with the following id exist in the database:
+        {   // 1) Assess the user is authenticated:
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(userId == null)
+            {
+                return Unauthorized("User not authenticated.");
+            }
+            // 2) Ensures the User with the following id exist in the database:
             var user = await _context.Users.FindAsync(budget.UserId);
             if(user == null){
                 return NotFound("user not found.");
             }
-            // 2) Set the User navigation property:
+            // 3) Set the User navigation property:
             budget.User = user;
-            // 3) Add the budget:
+            // 4) Add the budget:
             _context.Budgets.Add(budget);
-            // 4) Attempt to save the entry into the database:
+            // 5) Attempt to save the entry into the database:
             try
             {
                 await _context.SaveChangesAsync();
