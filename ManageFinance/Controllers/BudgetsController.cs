@@ -68,7 +68,14 @@ namespace ManageFinance.Controllers
         // PUT: api/Budgets/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutBudget(string id, Budget budget)
-        {   // 1) Assess whether the budget exist:
+        {   // 1) Assess the user is authenticated:
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(userId == null)
+            {
+                return Unauthorized("User not authenticated.");
+            }
+            
+            // 2) Assess whether the budget exist:
             var existingBudget = await _context.Budgets.FindAsync(id);
             // Case where the object doesn't exist => return a 404:
             if(existingBudget==null){
@@ -163,7 +170,13 @@ namespace ManageFinance.Controllers
         // DELETE: api/Budgets/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBudget(string id)
-        {
+        {   // 1) Assess the user is authenticated:
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(userId == null)
+            {
+                return Unauthorized("User not authenticated.");
+            }
+            // 2) Retrieve the budget:
             var budget = await _context.Budgets.FindAsync(id);
             if (budget == null)
             {
