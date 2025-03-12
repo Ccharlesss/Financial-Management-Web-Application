@@ -78,7 +78,14 @@ namespace ManageFinance.Controllers
         // PUT: api/Investments/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutInvestment(string id, Investment investment)
-        {   // 1) Retrieve the Investment:
+        {   // 1) Assess if the user is authenticated:
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(userId == null)
+            {
+                return Unauthorized("User not authenticated.");
+            }
+
+            // 2) Retrieve the investment from the DB:
             var retrievedInvestment = await _context.Investments.FindAsync(id);
             if(retrievedInvestment==null)
             {
@@ -109,7 +116,8 @@ namespace ManageFinance.Controllers
                 }
             }
             return NoContent();
-        }   
+        }
+
 //=============================================================================================================================
 
 
