@@ -385,3 +385,13 @@
 /Users/romainkuhne/Documents/ManageFinanceSolution/ManageFinanceTests/obj/Debug/net8.0/ManageFinanceTests.pdb
 /Users/romainkuhne/Documents/ManageFinanceSolution/ManageFinanceTests/obj/Debug/net8.0/ManageFinanceTests.genruntimeconfig.cache
 /Users/romainkuhne/Documents/ManageFinanceSolution/ManageFinanceTests/obj/Debug/net8.0/ref/ManageFinanceTests.dll
+/Users/romainkuhne/Documents/ManageFinanceSolution/ManageFinanceTests/obj/Debug/net8.0/ManageFinanceTests.sourcelink.json
+/Users/romainkuhne/Documents/ManageFinanceSolution/ManageFinanceTests/bin/Debug/net8.0/Microsoft.EntityFrameworkCore.InMemory.dll
+/Users/romainkuhne/Documents/ManageFinanceSolution/ManageFinanceTests/bin/Debug/net8.0/Microsoft.Extensions.Caching.Abstractions.dll
+/Users/romainkuhne/Documents/ManageFinanceSolution/ManageFinanceTests/bin/Debug/net8.0/Microsoft.Extensions.Caching.Memory.dll
+/Users/romainkuhne/Documents/ManageFinanceSolution/ManageFinanceTests/bin/Debug/net8.0/Microsoft.Extensions.DependencyInjection.dll
+/Users/romainkuhne/Documents/ManageFinanceSolution/ManageFinanceTests/bin/Debug/net8.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll
+/Users/romainkuhne/Documents/ManageFinanceSolution/ManageFinanceTests/bin/Debug/net8.0/Microsoft.Extensions.Logging.dll
+/Users/romainkuhne/Documents/ManageFinanceSolution/ManageFinanceTests/bin/Debug/net8.0/Microsoft.Extensions.Logging.Abstractions.dll
+/Users/romainkuhne/Documents/ManageFinanceSolution/ManageFinanceTests/bin/Debug/net8.0/Microsoft.Extensions.Primitives.dll
+/Users/romainkuhne/Documents/ManageFinanceSolution/ManageFinanceTests/bin/Debug/net8.0/System.Diagnostics.DiagnosticSource.dll
