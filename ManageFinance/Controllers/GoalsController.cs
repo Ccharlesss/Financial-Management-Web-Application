@@ -30,8 +30,14 @@ namespace ManageFinance.Controllers
         // GET: api/Goals
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Goal>>> GetGoals()
-        {
-            return await _context.Goals.ToListAsync();
+        {   // 1) Assess whether the user is authenticated:
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(userId == null)
+            {
+                return Unauthorized("User not authenticated");
+            }
+            var goals = await _context.Goals.ToListAsync();
+            return Ok(goals);
         }
 //=============================================================================================================================
 
