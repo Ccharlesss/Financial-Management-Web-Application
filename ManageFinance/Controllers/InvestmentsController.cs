@@ -34,8 +34,15 @@ namespace ManageFinance.Controllers
         // GET: api/Investments
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Investment>>> GetInvestments()
-        {   // 1) Return all Investments present in the DB in a list format:
-            return await _context.Investments.ToListAsync();
+        {   // 1) Assess the user is authenticated:
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(userId == null)
+            {
+                return Unauthorized("User not authenticated.");
+            }
+            // 2) Return all Investments present in the DB in a list format:
+            var investments = await _context.Investments.ToListAsync();
+            return Ok(investments);
         }
 //=============================================================================================================================
 
@@ -52,13 +59,19 @@ namespace ManageFinance.Controllers
         // GET: api/Investments/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Investment>> GetInvestment(string id)
-        {   // 1) Retrieve the investment from the DB:
+        {   // 1) Assess the user is authenticated:
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(userId == null)
+            {
+                return Unauthorized("User not authenticated.");
+            }
+            // 2) Retrieve the investment from the DB:
             var investment = await _context.Investments.FindAsync(id);
             if(investment==null)
             {
                 return NotFound("Investment not found.");
             }
-            return investment;
+            return Ok(investment);
         }
 //=============================================================================================================================
 
