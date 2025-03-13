@@ -28,8 +28,14 @@ namespace ManageFinance.Controllers
         // GET: api/Budgets
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Budget>>> GetBudgets()
-        {
-            return await _context.Budgets.ToListAsync();
+        {   // Assess if the user is authenticted:
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(userId == null)
+            {
+                return Unauthorized("User not authenticated.");
+            }
+            var budgets = await _context.Budgets.ToListAsync();
+            return Ok(budgets);
         }
 //=============================================================================================================================
 
@@ -44,7 +50,12 @@ namespace ManageFinance.Controllers
         // GET: api/Budgets/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Budget>> GetBudget(string id)
-        {
+        {   // 1) Assess the user is authenticated:
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(userId == null)
+            {
+                return Unauthorized("User not authenticated.");
+            }
             var budget = await _context.Budgets.FindAsync(id);
 
             if (budget == null)
@@ -52,7 +63,7 @@ namespace ManageFinance.Controllers
                 return NotFound();
             }
 
-            return budget;
+            return Ok(budget);
         }
 //=============================================================================================================================
 
