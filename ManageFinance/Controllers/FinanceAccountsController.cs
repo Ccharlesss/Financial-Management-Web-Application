@@ -188,17 +188,22 @@ namespace ManageFinance.Controllers
 //                                              PURPOSE: REMOVE A FINANCIAL ACCOUNT:
         [HttpDelete("{id}")]
         public async Task<IActionResult>DeleteFinanceAccount(string id)
-        {
-            // 1) Retrieve the Financial account from the DB:
+        {   // 1) Assess if the user is authenticated:
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(userId == null)
+            {
+                return Unauthorized("User not authenticated.");
+            }
+            // 2) Retrieve the Financial account from the DB:
             var financeAccount = await _context.Accounts.FindAsync(id);
             if(financeAccount == null)
             {
                 return NotFound("Financial Account not found.");
             }
             
-            // 2) Update the state of the entry to indicate EFcore to remove the account:
+            // 3) Update the state of the entry to indicate EFcore to remove the account:
             _context.Accounts.Remove(financeAccount);
-            // 3) Save the changes made to the DB and remove the entry:
+            // 4) Save the changes made to the DB and remove the entry:
             await _context.SaveChangesAsync();
             return NoContent();
         }
