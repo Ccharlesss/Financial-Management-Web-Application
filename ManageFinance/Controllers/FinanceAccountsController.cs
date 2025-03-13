@@ -46,7 +46,12 @@ namespace ManageFinance.Controllers
         // GET: api/FinanceAccounts/5
         [HttpGet("{id}")]
         public async Task<ActionResult<FinanceAccount>> GetFinanceAccount(string id)
-        {
+        {   // 1) Assess if the user is authenticated:
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(userId == null)
+            {
+                return Unauthorized("User not authenticated.");
+            }
             var financeAccount = await _context.Accounts.FindAsync(id);
 
             if (financeAccount == null)
@@ -54,7 +59,7 @@ namespace ManageFinance.Controllers
                 return NotFound();
             }
 
-            return financeAccount;
+            return Ok(financeAccount);
         }
 //=============================================================================================================================
 
