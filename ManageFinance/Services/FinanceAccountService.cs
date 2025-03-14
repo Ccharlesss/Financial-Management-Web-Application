@@ -1,3 +1,5 @@
+namespace ManageFinance.Services;
+
 public interface IFinanceAccountService
 {
   decimal ComputeBalance(FinanceAccount financeAccount);

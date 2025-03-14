@@ -6,12 +6,16 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ManageFinance.Models;
+using ManageFinance.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace ManageFinance.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TransactionsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -155,7 +159,14 @@ namespace ManageFinance.Controllers
         // POST: api/Transactions
         [HttpPost]
         public async Task<ActionResult<Transaction>> PostTransaction(Transaction transaction)
-        {   // 1) Retrieve the Account where the transaction belongs to:
+        {   // 1) Assess the user is authenticated:
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(userId == null)
+            {
+                return Unauthorized("User not authenticated.");
+            }
+
+            // 2) Retrieve the Account where the transaction belongs to:
             var retrievedAccount = await _context.Accounts
                 // Ensures when retrieve account => all transactions associated with account are also loded
                 .Include(a => a.Transactions)
@@ -169,15 +180,15 @@ namespace ManageFinance.Controllers
                 return NotFound("Account not found");
             }
 
-            // 2) Set the navigation's property:
+            // 3) Set the navigation's property:
             transaction.FinanceAccount = retrievedAccount;
-            // 3) Create the transaction related to the account:
+            // 4) Create the transaction related to the account:
             _context.Transactions.Add(transaction);
-            // 4) Update the balance of the finance Account:
+            // 5) Update the balance of the finance Account:
             retrievedAccount.Balance = _financeAccountService.ComputeBalance(retrievedAccount);
 
 
-            // 4) Attempt to save the changes made to the DB:
+            // 6) Attempt to save the changes made to the DB:
             try
             {
                 await _context.SaveChangesAsync();
