@@ -257,7 +257,7 @@ namespace ManageFinance.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IEmailService _emailService;
-        private readonly IUrlHelper _urlHelper; // Enable during testing only
+        // private readonly IUrlHelper _urlHelper; // Enable during testing only
         private readonly IJwtService _jwtService;
 
         // Constructor: Add IUrlHelper as a dependency
@@ -265,13 +265,13 @@ namespace ManageFinance.Controllers
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
             IEmailService emailService,
-            IUrlHelper urlHelper,
+            // IUrlHelper urlHelper,
             IJwtService jwtService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailService = emailService;
-            _urlHelper = urlHelper;
+            // _urlHelper = urlHelper;
             _jwtService = jwtService;
         }
 
@@ -314,7 +314,7 @@ namespace ManageFinance.Controllers
                     // Case where the assignment of the role didn't succeed
                     if (!roleResult.Succeeded)
                     {
-                        return BadRequest("Failed to assign the role 'User' to the user.");
+                        return BadRequest(new {message="Failed to assign the role 'User' to the user."});
                     }
                 }
 
@@ -325,15 +325,15 @@ namespace ManageFinance.Controllers
                 var encodedToken = System.Net.WebUtility.UrlEncode(token);
 
                 // Create the verification link with the encoded token
-                var verificationLink = _urlHelper.Action("VerifyEmail", "Account", new { userId = user.Id, token = encodedToken }, Request.Scheme);
-                // var verificationLink = Url.Action("VerifyEmail", "Account", new { userId = user.Id, token = encodedToken }, Request.Scheme);
+                // var verificationLink = _urlHelper.Action("VerifyEmail", "Account", new { userId = user.Id, token = encodedToken }, Request.Scheme);
+                var verificationLink = Url.Action("VerifyEmail", "Account", new { userId = user.Id, token = encodedToken }, Request.Scheme);
                 // Send the verification email to the new user
                 var emailSubject = "Email Verification";
                 var emailBody = $"Please verify your email by clicking the following link: {verificationLink}";
                 _emailService.SendEmail(user.Email, emailSubject, emailBody);
 
                 // Return an HTTP 200 OK if the user has been registered successfully
-                return Ok("User registered successfully. An email verification link has been sent.");
+                return Ok(new {message="User registered successfully. An email verification link has been sent."});
             }
 
             // Returns an HTTP 400 Bad Request if the user couldn't be registered
@@ -352,7 +352,7 @@ namespace ManageFinance.Controllers
             // Case where user has not been found => Return 404 not found
             if (user == null)
             {
-                return NotFound("User not found.");
+                return NotFound(new {message="User not found."});
             }
 
             // Case where user has been found:
@@ -362,11 +362,11 @@ namespace ManageFinance.Controllers
             // Case where email verification was successful => Return an HTTP 200 OK
             if (result.Succeeded)
             {
-                return Ok("Email verification successful.");
+                return Ok(new {message="Email verification successful."});
             }
 
             // Case where email verification was unsuccessful => Return a 400 BadRequest
-            return BadRequest("Email verification failed.");
+            return BadRequest(new {message="Email verification failed."});
         }
 
         [HttpPost("login")]
@@ -385,14 +385,14 @@ namespace ManageFinance.Controllers
             }
 
             // Returns a 401 Unauthorized if login unsuccessful
-            return Unauthorized("Invalid login attempt.");
+            return Unauthorized(new {message="Email verification failed."});
         }
 
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync(); // Log out the user
-            return Ok("Logged out.");
+            return Ok(new {message="Logged out."});
         }
 
         // private string GenerateJwtToken(AppUser user, IList<string> roles)
@@ -435,7 +435,7 @@ namespace ManageFinance.Controllers
             // Case where no user could be retrieved from the email
             if (user == null)
             {
-                return NotFound("Invalid Email. No user could be retrieved.");
+                return NotFound(new {message="Invalid Email. No user could be retrieved."});
             }
 
             // Attempt to update user's password
@@ -444,7 +444,7 @@ namespace ManageFinance.Controllers
 
             if (result.Succeeded)
             {
-                return Ok("Password changed successfully.");
+                return Ok(new {message="Password changed successfully."});
             }
 
             return BadRequest(result.Errors);

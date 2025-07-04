@@ -238,13 +238,23 @@ builder.Logging.ClearProviders(); // Clear default logging providers
 builder.Logging.AddConsole();       // Add Console logging
 builder.Logging.SetMinimumLevel(LogLevel.Information); // Set log level
 
+
+// ===========================================================================================================
+// ===========================================================================================================
+// Purpose: Allow the frontend in Angular to communicate with the backend:
+builder.Services.AddCors(options => 
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
+
 var app = builder.Build();
 
-
-// ===========================================================================================================
-// Purpose: Maps user's HTTP request to controllers action methods:
-app.MapControllers();
-// ===========================================================================================================
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -253,7 +263,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseHttpsRedirection(); // Redirect HTTP -> HTTPS
+app.UseCors(); // Allow frontend (Angular) to talk to the backend
+app.UseAuthentication(); // Parse & validate HWT token
+app.UseAuthorization(); // Enforce access control rules
+// ===========================================================================================================
+// Purpose: Maps user's HTTP request to controllers action methods:
+app.MapControllers(); // Route requests to controllers
+// ===========================================================================================================
 
 // ===========================================================================================================
 // Purpose: initialize roles and create an admin user:
@@ -264,5 +281,7 @@ using (var scope = app.Services.CreateScope())
     await RoleAndUserInitializer.InitializeAsync(serviceProvider, logger);
 }
 // ===========================================================================================================
+
+
 
 app.Run();
