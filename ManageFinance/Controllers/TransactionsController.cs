@@ -44,18 +44,22 @@ namespace ManageFinance.Controllers
 //=============================================================================================================================
 //                                              PURPOSE: RETRIEVE ALL TRANSACTIONS
         // GET: api/Transactions
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactions()
-        {   // 1) Return from the DB a list of all transactions:
-            return await _context.Transactions.ToListAsync();
+        [HttpGet("account/{accountId}")]
+        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactions(string accountId)
+        {   
+            var transactions = await _context.Transactions
+                .Where(t => t.FinanceAccountId == accountId)
+                .ToListAsync();
+
+            if(transactions == null || !transactions.Any())
+            {
+                return NotFound("No transactions found with this account Id.");
+            }
+
+            // 1) Return from the DB a list of all transactions:
+            return Ok(transactions);
         }
 //=============================================================================================================================
-
-
-
-
-
-
 
 
 

@@ -1,0 +1,175 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="space-y-12 sm:space-y-16">
+    <div>
+      <h2 class="text-base/7 font-semibold text-gray-900">
+        Information about the account
+      </h2>
+
+      <div
+        class="mt-10 space-y-8 border-b border-gray-900/10 pb-12 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0"
+      >
+        <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+          <label
+            for="first-name"
+            class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5"
+            >Account name</label
+          >
+          <div class="mt-2 sm:col-span-2 sm:mt-0">
+            <input
+              id="first-name"
+              type="text"
+              name="first-name"
+              autocomplete="given-name"
+              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:max-w-xs sm:text-sm/6"
+              required
+              formControlName="AccountName"
+            />
+          </div>
+        </div>
+
+        <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+          <label
+            for="last-name"
+            class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5"
+            >Account Type</label
+          >
+          <div class="mt-2 sm:col-span-2 sm:mt-0">
+            <input
+              id="last-name"
+              type="text"
+              name="last-name"
+              autocomplete="family-name"
+              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:max-w-xs sm:text-sm/6"
+              required
+              formControlName="AccountType"
+            />
+          </div>
+        </div>
+
+        <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+          <label
+            for="country"
+            class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5"
+            >Country</label
+          >
+          <div class="mt-2 sm:col-span-2 sm:mt-0">
+            <div class="grid grid-cols-1 sm:max-w-xs">
+              <select
+                id="country"
+                name="country"
+                autocomplete="country-name"
+                class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+              >
+                <option>United States</option>
+                <option>Canada</option>
+                <option>Mexico</option>
+                <option>Switzerland</option>
+                <option>France</option>
+                <option>Italy</option>
+                <option>Japan</option>
+                <option>China</option>
+              </select>
+              <svg
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                data-slot="icon"
+                aria-hidden="true"
+                class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
+              >
+                <path
+                  d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
+                  clip-rule="evenodd"
+                  fill-rule="evenodd"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+          <label
+            for="street-address"
+            class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5"
+            >Street address</label
+          >
+          <div class="mt-2 sm:col-span-2 sm:mt-0">
+            <input
+              id="street-address"
+              type="text"
+              name="street-address"
+              autocomplete="street-address"
+              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:max-w-xl sm:text-sm/6"
+            />
+          </div>
+        </div>
+
+        <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+          <label
+            for="city"
+            class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5"
+            >City</label
+          >
+          <div class="mt-2 sm:col-span-2 sm:mt-0">
+            <input
+              id="city"
+              type="text"
+              name="city"
+              autocomplete="address-level2"
+              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:max-w-xs sm:text-sm/6"
+            />
+          </div>
+        </div>
+
+        <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+          <label
+            for="region"
+            class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5"
+            >State / Province</label
+          >
+          <div class="mt-2 sm:col-span-2 sm:mt-0">
+            <input
+              id="region"
+              type="text"
+              name="region"
+              autocomplete="address-level1"
+              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:max-w-xs sm:text-sm/6"
+            />
+          </div>
+        </div>
+
+        <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+          <label
+            for="postal-code"
+            class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5"
+            >ZIP / Postal code</label
+          >
+          <div class="mt-2 sm:col-span-2 sm:mt-0">
+            <input
+              id="postal-code"
+              type="text"
+              name="postal-code"
+              autocomplete="postal-code"
+              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:max-w-xs sm:text-sm/6"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-6 flex items-center justify-end gap-x-6">
+    <button
+      (click)="onCancel()"
+      type="button"
+      class="text-sm/6 font-semibold text-gray-900"
+    >
+      Cancel
+    </button>
+    <button
+      type="submit"
+      class="inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+    >
+      save
+    </button>
+  </div>
+</form>

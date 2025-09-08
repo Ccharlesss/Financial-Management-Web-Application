@@ -1,0 +1,10 @@
+<!-- toast.component.html -->
+@if (show) {
+<div
+  class="fixed top-5 right-5 z-50 rounded-md px-4 py-2 shadow-lg text-white transition-opacity duration-300"
+  [class.bg-green-600]="type === 'success'"
+  [class.bg-red-600]="type === 'error'"
+>
+  {{ message }}
+</div>
+}

@@ -28,10 +28,24 @@ namespace ManageFinance.Controllers
 //=============================================================================================================================
 //                                              PURPOSE: GET ALL FINANCIAL ACCOUNTS
         // GET: api/FinanceAccounts
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<FinanceAccount>>> GetAccounts()
+        // [HttpGet]
+        // public async Task<ActionResult<IEnumerable<FinanceAccount>>> GetAccounts()
+        // {
+        //     return await _context.Accounts.ToListAsync();
+        // }
+        // [HttpGet("{id}")]
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<IEnumerable<FinanceAccount>>> GetUserFinanceAccounts(string userId)
         {
-            return await _context.Accounts.ToListAsync();
+            var accounts = await _context.Accounts
+                .Where(a => a.UserId == userId)
+                .ToListAsync();
+            
+            if(accounts == null || !accounts.Any())
+            {
+                return NotFound("No accounts found for this user.");
+            }
+            return Ok(accounts);
         }
 //=============================================================================================================================
 
@@ -76,7 +90,7 @@ namespace ManageFinance.Controllers
 //=============================================================================================================================
 //                                              PURPOSE: UPDATE A FINANCIAL ACCOUNT
         // PUT: api/FinanceAccounts/5
-        [HttpGet("{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> PutFinanceAccount(string id, FinanceAccount financeAccount)
         {   // 1) Assess if the user is authenticated:
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -192,7 +206,7 @@ namespace ManageFinance.Controllers
 //=============================================================================================================================
 //                                              PURPOSE: REMOVE A FINANCIAL ACCOUNT:
         [HttpDelete("{id}")]
-        public async Task<IActionResult>DeleteFinanceAccount(string id)
+        public async Task<IActionResult> DeleteFinanceAccount(string id)
         {   // 1) Assess if the user is authenticated:
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if(userId == null)

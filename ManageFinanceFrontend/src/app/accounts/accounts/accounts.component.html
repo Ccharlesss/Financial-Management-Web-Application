@@ -1,0 +1,147 @@
+<div class="px-4 sm:px-6 lg:px-8">
+  <!-- Header -->
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <h1 class="text-base font-semibold text-gray-900">Users</h1>
+      <p class="mt-2 text-sm text-gray-700">
+        A list of all of the user's financial accounts
+      </p>
+    </div>
+    <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+      <button
+        (click)="showNewAccountForm.set(true)"
+        type="button"
+        class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+      >
+        Create an account
+      </button>
+    </div>
+  </div>
+
+  <!-- Accounts Table -->
+  <div class="mt-8 flow-root">
+    <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+        <table class="min-w-full divide-y divide-gray-300">
+          <thead>
+            <tr>
+              <th
+                scope="col"
+                class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
+              >
+                Name
+              </th>
+              <th
+                scope="col"
+                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              >
+                Type
+              </th>
+              <th
+                scope="col"
+                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              >
+                Id
+              </th>
+              <th
+                scope="col"
+                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              >
+                Balance
+              </th>
+              <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
+                <span class="sr-only">Edit</span>
+              </th>
+            </tr>
+          </thead>
+
+          <tbody class="divide-y divide-gray-200">
+            @for (account of userAccounts(); track account.id) {
+            <tr
+              (click)="goToTransactions(account.id)"
+              class="cursor-pointer hover:bg-gray-100"
+            >
+              <td
+                class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0"
+              >
+                {{ account.accountName }}
+              </td>
+              <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                {{ account.accountType }}
+              </td>
+              <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                {{ account.id }}
+              </td>
+              <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                {{ account.balance }}
+              </td>
+              <td
+                class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0"
+              >
+                <a href="#" class="text-indigo-600 hover:text-indigo-900">
+                  Edit<span class="sr-only">, {{ account.accountName }}</span>
+                </a>
+
+                <!-- Trash icon button -->
+                <button
+                  (click)="onDelete(account.id)"
+                  class="text-red-600 hover:text-red-800"
+                >
+                  <fa-icon [icon]="faTrash"></fa-icon>
+                </button>
+                <!-- Edit icon button -->
+                <button
+                  (click)="onEdit(account.id)"
+                  class="text-blue-600 hover:text-blue-800"
+                >
+                  <fa-icon [icon]="faPenToSquare"></fa-icon>
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal: New Account Form -->
+@if (showNewAccountForm()) {
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50">
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl p-6 relative">
+    <button
+      (click)="showNewAccountForm.set(false)"
+      class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl"
+      aria-label="Close"
+    >
+      ✕
+    </button>
+
+    <app-new-account
+      (cancel)="showNewAccountForm.set(false)"
+      (accountCreated)="handleAccountCreated()"
+    />
+  </div>
+</div>
+}
+
+<!-- Modal: Update Account Form -->
+@if (showUpdateAccountForm()) {
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50">
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl p-6 relative">
+    <button
+      (click)="showUpdateAccountForm.set(false)"
+      class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl"
+      aria-label="Close"
+    >
+      ✕
+    </button>
+
+    <app-update-account
+      (cancel)="showUpdateAccountForm.set(false)"
+      [accountId]="editingAccountId()!"
+      (accountUpdated)="handleAccountUpdated()"
+    />
+  </div>
+</div>
+}

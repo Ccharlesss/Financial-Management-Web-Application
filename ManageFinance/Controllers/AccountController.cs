@@ -362,7 +362,8 @@ namespace ManageFinance.Controllers
             // Case where email verification was successful => Return an HTTP 200 OK
             if (result.Succeeded)
             {
-                return Ok(new {message="Email verification successful."});
+                // return Ok(new {message="Email verification successful."});
+                return Redirect("http://localhost:4200");
             }
 
             // Case where email verification was unsuccessful => Return a 400 BadRequest
