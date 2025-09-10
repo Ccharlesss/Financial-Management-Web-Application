@@ -1,6 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { TransactionSchema } from '../schemas/transaction.Schema';
+import {
+  TransactionSchema,
+  UpdateTransactionSchema,
+} from '../schemas/transaction.Schema';
 import { Transaction } from '../models/transaction.model';
 
 @Injectable({
@@ -35,4 +38,22 @@ export class TransactionService {
       `${this.TransactionUrl}/account/${accountId}`
     );
   }
+
+  // --------------------------------------------------------------------------
+  handleUpdateTransaction(data: UpdateTransactionSchema, TrasactionId: string) {
+    const body = {
+      Description: data.NewDescription,
+      Amount: data.NewAmount,
+      Date: data.NewDate,
+      IsExpense: data.NewStatus,
+    };
+    return this.httpClient.put(`${this.TransactionUrl}/${TrasactionId}`, body);
+  }
+  // --------------------------------------------------------------------------
+
+  // --------------------------------------------------------------------------
+  handleRemoveTransaction(TransactionId: string) {
+    return this.httpClient.delete(`${this.TransactionUrl}/${TransactionId}`);
+  }
+  // --------------------------------------------------------------------------
 }

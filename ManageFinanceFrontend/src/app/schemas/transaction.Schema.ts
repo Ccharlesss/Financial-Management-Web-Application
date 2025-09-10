@@ -5,3 +5,10 @@ export interface TransactionSchema {
   IsExpense: boolean;
   FinanceAccountId: string;
 }
+
+export interface UpdateTransactionSchema {
+  NewDescription: string;
+  NewAmount: number;
+  NewDate: string;
+  NewStatus: boolean;
+}
