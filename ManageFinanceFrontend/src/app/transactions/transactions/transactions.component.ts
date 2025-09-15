@@ -55,5 +55,42 @@ export class TransactionsComponent implements OnInit {
   // --------------------------------------------------------------------------
 
   // --------------------------------------------------------------------------
+  handleAccountCreated() {
+    const userId = this.tokenService.getUserIdFromToken();
+    if (!userId) {
+      console.warn('No user ID found in the token.');
+      return;
+    }
+
+    this.accountId = this.route.snapshot.paramMap.get('accountId')!;
+    this.transactionService.handleFetchTransaction(this.accountId).subscribe({
+      next: (transactions) => {
+        this.accountTransactions.set(transactions);
+      },
+      error: (err) => {
+        console.error('Failed to fetch transactions from the account');
+      },
+    });
+  }
+  // --------------------------------------------------------------------------
+
+  // --------------------------------------------------------------------------
+  handleTransactionUpdated() {
+    const userId = this.tokenService.getUserIdFromToken();
+    if (!userId) {
+      console.warn('No user ID found in the token.');
+      return;
+    }
+
+    this.accountId = this.route.snapshot.paramMap.get('accountId')!;
+    this.transactionService.handleFetchTransaction(this.accountId).subscribe({
+      next: (transactions) => {
+        this.accountTransactions.set(transactions);
+      },
+      error: (err) => {
+        console.error('Failed to fetch transactions from the account');
+      },
+    });
+  }
   // --------------------------------------------------------------------------
 }
